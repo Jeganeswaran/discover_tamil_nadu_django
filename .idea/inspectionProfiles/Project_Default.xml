@@ -1,0 +1,22 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="categories.models.Tag.*" />
+          <option value="django.db.models.fields.related.ForeignKey.*" />
+          <option value="django.db.models.fields.files.ImageField.url" />
+          <option value="django.db.models.fields.related.ManyToManyField.*" />
+          <option value="django.db.models.fields.CharField.*" />
+          <option value="bookings.forms.TextInput" />
+          <option value="urban_coach.urls.*" />
+          <option value="website.models.Colleges.courses" />
+          <option value="loan_management.models.StudentLoans.personal_document" />
+          <option value="django.db.models.fields.related.OneToOneField.*" />
+          <option value="billiontags_crm.urls.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

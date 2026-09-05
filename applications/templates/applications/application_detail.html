@@ -1,0 +1,744 @@
+{% load dtn %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{{ app.full_name }} — Committee Review</title>
+    <script>
+        tailwind.config={
+            theme:{
+                extend:{
+                    colors:{
+                        tn:{
+                            50:'#fff7ed',
+                            100:'#ffedd5',
+                            500:'#f97316',
+                            600:'#ea580c',
+                            700:'#c2410c',
+                            900:'#7c2d12'
+                        },
+                        ink:'#172033'
+                    },
+                    boxShadow:{
+                        soft:'0 18px 55px rgba(23,32,51,.08)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-glow {
+            background-image:
+                radial-gradient(circle at 20% 20%, #f97316 0, transparent 32%),
+                radial-gradient(circle at 90% 5%, #fbbf24 0, transparent 24%);
+        }
+
+        .section-header {
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #ea580c;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #1f2937;
+            margin-top: 0.5rem;
+        }
+
+        .field-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .field-value {
+            color: #475569;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            line-height: 1.625;
+            margin-bottom: 0.35rem;
+        }
+
+        .field-value.empty {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .section-group {
+            border-radius: 1.5rem;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+
+            /* shadow-soft equivalent */
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 0.35rem;
+        }
+
+        .grid-2-sm {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-3-sm {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 9999px;
+            background-color: #fff7ed;
+            color: #c2410c;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            font-weight: 500;
+            border: 1px solid #ffedd5;
+        }
+
+        .link-item {
+            color: #2563eb;
+            text-decoration-line: underline;
+            text-decoration-color: #93c5fd;
+            transition:
+                color 150ms ease-in-out,
+                text-decoration-color 150ms ease-in-out;
+        }
+
+        .link-item:hover {
+            color: #1d4ed8;
+            text-decoration-color: #60a5fa;
+        }
+
+        .lang-card {
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            background: linear-gradient(
+                to bottom right,
+                #f8fafc,
+                #ffffff
+            );
+            padding: 1rem;
+        }
+
+        /* sm breakpoint - 640px */
+        @media (min-width: 640px) {
+            .section-title {
+                font-size: 1.5rem;
+                line-height: 2rem;
+            }
+
+            .section-group {
+                padding: 2rem;
+            }
+
+            .grid-2-sm {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .grid-3-sm {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-ink antialiased">
+
+<!-- Header -->
+ <header class="relative overflow-hidden bg-ink text-white">
+    <div class="hero-glow absolute inset-0 opacity-20"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-11">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-3xl">
+          <a href="{% url 'applications:dashboard' %}" class="inline-flex items-center gap-1 text-xs font-semibold text-white/70 hover:text-white transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    Committee dashboard
+                </a>
+                <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{{ app.full_name }}</h1>
+                <p class="mt-2 text-sm leading-6 text-slate-300 sm:text-base">{{ app.primary_category }} · {{ app.country_of_residence }}</p>
+        </div>
+        <div class="grid grid-cols-2 gap-3 sm:flex">
+          <div class="rounded-3xl bg-white/10 backdrop-blur px-6 py-4 text-center">
+                <div class="text-xs font-semibold text-slate-300">Suggested Profile Score</div>
+                <div class="mt-2 text-4xl font-bold text-white">{{ suggested }}<span class="text-xl font-semibold text-slate-300">/100</span></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </header>
+<main class="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
+    <div class="grid gap-8 lg:grid-cols-[1fr_380px]">
+        
+        <!-- Main Content -->
+        <section class="space-y-6">
+            <!-- Personal Information -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Personal Details</p>
+                    <h2 class="section-title">Applicant Information</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid-2-sm">
+                    <div>
+                        <div class="field-label">Full Name</div>
+                        <div class="field-value">{{ app.full_name }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Email Address</div>
+                        <div class="field-value"><a href="mailto:{{ app.email }}" class="link-item">{{ app.email }}</a></div>
+                    </div>
+                    <div>
+                        <div class="field-label">Mobile / WhatsApp</div>
+                        <div class="field-value">{{ app.mobile_whatsapp }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Nationality</div>
+                        <div class="field-value">{{ app.nationality }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Country of Residence</div>
+                        <div class="field-value">{{ app.country_of_residence }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">City / State / Province</div>
+                        <div class="field-value">{{ app.city_state_province }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Preferred Language of Communication</div>
+                        <div class="field-value {% if not app.preferred_language %}empty{% endif %}">{{ app.preferred_language|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Age Group</div>
+                        <div class="field-value {% if not app.age_group %}empty{% endif %}">{{ app.age_group|default:'—' }}</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label">Address</div>
+                    <div class="field-value whitespace-pre-line">{{ app.address }}</div>
+                </div>
+            </div>
+
+            <!-- Professional Profile -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Professional</p>
+                    <h2 class="section-title">Professional Background</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid_2-sm">
+                    <div>
+                        <div class="field-label">Primary Category</div>
+                        <div class="field-value">{{ app.primary_category }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Other Category</div>
+                        <div class="field-value {% if not app.other_professional_category %}empty{% endif %}">{{ app.other_professional_category|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Organisation / Media House / Company</div>
+                        <div class="field-value {% if not app.organisation %}empty{% endif %}">{{ app.organisation|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Designation / Professional Role</div>
+                        <div class="field-value {% if not app.designation %}empty{% endif %}">{{ app.designation|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Years of Professional Experience</div>
+                        <div class="field-value {% if not app.years_experience %}empty{% endif %}">{{ app.years_experience|default:'—' }} years</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Website / Professional Profile</div>
+                        <div class="field-value {% if not app.website %}empty{% endif %}">
+                            {% if app.website %}<a href="{{ app.website }}" target="_blank" class="link-item">Visit website</a>{% else %}—{% endif %}
+                        </div>
+                    </div>
+                     <div>
+                        <div class="field-label">Previous International / Destination FAM Experience?</div>
+                        <div class="field-value {% if not app.years_experience %}empty{% endif %}">{{ app.years_experience|default:'—' }} years</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label">Short Biography</div>
+                    <div class="field-value whitespace-pre-line bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-4 border border-orange-100 mt-2">{{ app.short_bio }}</div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label">Awards, Recognitions & Achievements</div>
+                    <div class="field-value whitespace-pre-line {% if not app.awards %}empty{% endif %}">{{ app.awards|default:'—' }}</div>
+                </div>
+            </div>
+
+            <!-- Digital & Media Profile -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Digital Presence</p>
+                    <h2 class="section-title">Media & Audience Profile</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid_2-sm">
+                    <div>
+                        <div class="field-label">Total Audience</div>
+                        <div class="field-value font-semibold text-orange-600">{{ app.total_audience }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Monthly Reach</div>
+                        <div class="field-value {% if not app.monthly_reach %}empty{% endif %}">{{ app.monthly_reach|default:'—' }}</div>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <div class="field-label">Engagement Rate</div>
+                        <div class="field-value {% if not app.engagement_rate %}empty{% endif %}">{{ app.engagement_rate|default:'—' }}</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">Audience Regions</div>
+                    <div class="field-value whitespace-pre-line bg-slate-50 rounded-xl p-3 border border-slate-200">{{ app.audience_regions }}</div>
+                </div>
+                <div class="mt-4">
+                    <div class="field-label mb-2">Audience Languages</div>
+                    <div class="field-value">{{ app.audience_languages }}</div>
+                </div>
+
+                <!-- Social Profiles -->
+                <div class="mt-6">
+                    <div class="field-label mb-3">Social Profiles</div>
+                    {% if app.social_profiles %}
+                        <div class="space-y-2">
+                            {% for key, value in app.social_profiles.items %}
+                                {% if value %}
+                                    <div class="flex items-center gap-2 rounded-xl bg-orange-50 border border-orange-100 p-3">
+                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-orange-600 text-xs font-bold text-white capitalize">{{ key|slice:":1" }}</span>
+                                        <a href="{{ value }}" target="_blank" class="link-item flex-1 text-xs sm:text-sm">{{ key|title }}</a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+
+                <!-- Content Links -->
+                <div class="mt-6">
+                    <div class="field-label mb-3">Content Links</div>
+                    {% if app.content_links %}
+                        <div class="space-y-2">
+                            {% for link in app.content_links %}
+                                <div class="flex items-center gap-2 rounded-xl bg-blue-50 border border-blue-100 p-3">
+                                    <svg class="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                    <a href="{{ link }}" target="_blank" class="link-item flex-1 text-xs sm:text-sm truncate">{{ link }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Languages -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Languages</p>
+                    <h2 class="section-title">Professional Languages</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                {% if app.professional_languages %}
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        {% for lang in app.professional_languages %}
+                            <div class="lang-card">
+                                <div class="font-semibold text-ink">{{ lang.language }}</div>
+                                <div class="text-xs text-slate-600 mt-1 uppercase tracking-wide font-semibold">{{ lang.proficiency|default:"Not specified" }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="field-value empty">—</div>
+                {% endif %}
+                <div class="mt-6">
+                    <div class="field-label">Language(s) you would use to share your Tamil Nadu experience</div>
+                    <div class="field-value">{{ app.post_fam_languages }}</div>
+                </div>
+                <div class="mt-4">
+                    <div class="field-label">Countries / regions you can effectively reach through these languages</div>
+                    <div class="field-value {% if not app.language_reach_regions %}empty{% endif %}">{{ app.language_reach_regions|default:'—' }}</div>
+                </div>
+            </div>
+
+            <!-- India & Tamil Nadu Experience -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Travel History</p>
+                    <h2 class="section-title">India & Tamil Nadu experience</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid_2-sm">
+                    <div>
+                        <div class="field-label">Have you visited India before? *</div>
+                        <div class="field-value font-medium">{{ app.visited_india }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Have you visited Tamil Nadu before? *</div>
+                        <div class="field-value font-medium">{{ app.visited_tamil_nadu }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Have you previously published, broadcast or promoted India / Tamil Nadu?</div>
+                        <div class="field-value {% if not app.last_india_visit %}empty{% endif %}">{{ app.last_india_visit|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Previous International / Destination FAM Experience</div>
+                        <div class="field-value {% if not app.fam_experience %}empty{% endif %}">{{ app.fam_experience|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Have you previously published, broadcast or promoted India / Tamil Nadu?</div>
+                        <div class="field-value {% if not app.promoted_india_tn %}empty{% endif %}">{{ app.promoted_india_tn|default:'—' }}</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">Have you visited India before?</div>
+                    <div class="field-value whitespace-pre-line bg-slate-50 rounded-xl p-3 border border-slate-200 {% if not app.india_states %}empty{% endif %}">{{ app.india_states|default:'—' }}</div>
+                </div>
+                <div class="mt-4">
+                    <div class="field-label mb-2">Have you visited Tamil Nadu before?</div>
+                    <div class="field-value whitespace-pre-line bg-slate-50 rounded-xl p-3 border border-slate-200 {% if not app.tamil_nadu_destinations %}empty{% endif %}">{{ app.tamil_nadu_destinations|default:'—' }}</div>
+                </div>
+                <div class="mt-4">
+                    <div class="field-label mb-2">FAM Experience Details</div>
+                    <div class="field-value whitespace-pre-line {% if not app.fam_experience_details %}empty{% endif %}">{{ app.fam_experience_details|default:'—' }}</div>
+                </div>
+                <div class="mt-4">
+                    <div class="field-label mb-2">Promotion Details</div>
+                    <div class="field-value whitespace-pre-line {% if not app.promoted_india_tn_details %}empty{% endif %}">{{ app.promoted_india_tn_details|default:'—' }}</div>
+                </div>
+            </div>
+
+            <!-- Tourism Interests -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Interests</p>
+                    <h2 class="section-title">What would you like to explore?</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div>
+                    <div class="field-label mb-3">Areas of Tamil Nadu tourism you are interested in exploring</div>
+                    {% if app.tourism_interests %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for item in app.tourism_interests %}<span class="tag">{{ item }}</span>{% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+                <div class="mt-6">
+                    <div class="field-label">Other area of interest</div>
+                    <div class="field-value {% if not app.other_tourism_interest %}empty{% endif %}">{{ app.other_tourism_interest|default:'—' }}</div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">What would you most like to experience or discover in Tamil Nadu?</div>
+                    <div class="field-value whitespace-pre-line {% if not app.desired_experience %}empty{% endif %}">{{ app.desired_experience|default:'—' }}</div>
+                </div>
+                <div class="mt-4">
+                    <div class="field-label mb-2">Which Tamil Nadu destinations are you already familiar with?</div>
+                    <div class="field-value whitespace-pre-line {% if not app.familiar_destinations %}empty{% endif %}">{{ app.familiar_destinations|default:'—' }}</div>
+                </div>
+            </div>
+
+            <!-- Post-FAM Promotion -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Promotion</p>
+                    <h2 class="section-title">Post-FAM Promotion Strategy</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div>
+                    <div class="field-label mb-3">How will you help showcase Tamil Nadu in your region / market?</div>
+                    {% if app.promotion_channels %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for item in app.promotion_channels %}<span class="tag">{{ item }}</span>{% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+                <div class="mt-6">
+                    <div class="field-label">Other Promotion Channel</div>
+                    <div class="field-value {% if not app.other_promotion_channel %}empty{% endif %}">{{ app.other_promotion_channel|default:'—' }}</div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">Proposed Post-FAM Promotion Plan</div>
+                    <div class="field-value whitespace-pre-line bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-4 border border-orange-100">{{ app.promotion_plan }}</div>
+                </div>
+                <div class="mt-6 grid_2-sm">
+                    <div>
+                        <div class="field-label">Media Participation</div>
+                        <div class="field-value {% if not app.media_participation %}empty{% endif %}">{{ app.media_participation|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Post-FAM Participation</div>
+                        <div class="field-value {% if not app.post_fam_participation %}empty{% endif %}">{{ app.post_fam_participation|default:'—' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content & Coverage -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Content</p>
+                    <h2 class="section-title">Content & Coverage Plan</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div>
+                    <div class="field-label mb-3">What type of content do you expect to produce?</div>
+                    {% if app.expected_content_types %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for item in app.expected_content_types %}<span class="tag">{{ item }}</span>{% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+                <div class="mt-6">
+                    <div class="field-label">Other Content Type</div>
+                    <div class="field-value {% if not app.other_content_type %}empty{% endif %}">{{ app.other_content_type|default:'—' }}</div>
+                </div>
+                <div class="mt-6 grid_2-sm">
+                    <div>
+                        <div class="field-label">How many content / promotional outputs do you expect to create?</div>
+                        <div class="field-value {% if not app.output_count %}empty{% endif %}">{{ app.output_count|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Expected timeline for post-FAM coverage</div>
+                        <div class="field-value {% if not app.coverage_timeline %}empty{% endif %}">{{ app.coverage_timeline|default:'—' }}</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">What specific value can you bring to Tamil Nadu Tourism in your market?</div>
+                    <div class="field-value whitespace-pre-line {% if not app.market_value %}empty{% endif %}">{{ app.market_value|default:'—' }}</div>
+                </div>
+            </div>
+
+            <!-- Travel Trade Potential -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Trade</p>
+                    <h2 class="section-title">Travel Trade Potential</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid_2-sm">
+                    <div>
+                        <div class="field-label">Do you currently sell or promote India as a destination?</div>
+                        <div class="field-value {% if not app.sells_india %}empty{% endif %}">{{ app.sells_india|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Do you currently offer Tamil Nadu in your travel programmes / packages?</div>
+                        <div class="field-value {% if not app.offers_tamil_nadu %}empty{% endif %}">{{ app.offers_tamil_nadu|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Would you consider introducing Tamil Nadu into your existing travel programmes after the FAM?</div>
+                        <div class="field-value {% if not app.introduce_tamil_nadu %}empty{% endif %}">{{ app.introduce_tamil_nadu|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Would you be interested in developing a dedicated Tamil Nadu itinerary / package?</div>
+                        <div class="field-value {% if not app.dedicated_tn_package %}empty{% endif %}">{{ app.dedicated_tn_package|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Approximate number of travellers / clients handled annually</div>
+                        <div class="field-value {% if not app.annual_clients %}empty{% endif %}">{{ app.annual_clients|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Interested in future B2B engagement with Tamil Nadu Tourism and tourism stakeholders?</div>
+                        <div class="field-value {% if not app.future_b2b %}empty{% endif %}">{{ app.future_b2b|default:'—' }}</div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-3">Tamil Nadu tourism products with the strongest potential in your market</div>
+                    {% if app.strong_products %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for item in app.strong_products %}<span class="tag">{{ item }}</span>{% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Selection Criteria -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Selection</p>
+                    <h2 class="section-title">Participant value & suitability</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div>
+                    <div class="field-label mb-3">Why should you be selected for the Discover Tamil Nadu International FAM Tour?</div>
+                    <div class="field-value whitespace-pre-line bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-4 border border-green-100">{{ app.selection_reason }}</div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">What unique perspective, audience or market access can you bring?</div>
+                    <div class="field-value whitespace-pre-line {% if not app.unique_perspective %}empty{% endif %}">{{ app.unique_perspective|default:'—' }}</div>
+                </div>
+            </div>
+
+            <!-- Programme & Availability -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Programme</p>
+                    <h2 class="section-title">Programme & Availability</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid_2-sm">
+                    <div>
+                        <div class="field-label">Programme Source</div>
+                        <div class="field-value">{{ app.programme_source }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Other Programme Source</div>
+                        <div class="field-value {% if not app.other_programme_source %}empty{% endif %}">{{ app.other_programme_source|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Availability</div>
+                        <div class="field-value">{{ app.availability }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Valid Passport</div>
+                        <div class="field-value {% if not app.valid_passport %}empty{% endif %}">{{ app.valid_passport|default:'—' }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Comply with Schedule</div>
+                        <div class="field-value {% if not app.comply_schedule %}empty{% endif %}">{{ app.comply_schedule|default:'—' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Declaration & Supporting Info -->
+            <div class="section-group">
+                <div class="pb-4">
+                    <p class="section-header">Declaration</p>
+                    <h2 class="section-title">Declaration & Supporting Information</h2>
+                    <div class="mb-2 mt-2 h-px bg-slate-100"></div>
+                </div>
+                <div class="grid_2-sm">
+                    <div>
+                        <div class="field-label">Applicant Name</div>
+                        <div class="field-value">{{ app.applicant_name }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Declaration Date</div>
+                        <div class="field-value font-mono">{{ app.declaration_date|date:"d M Y" }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Digital Signature</div>
+                        <div class="field-value font-mono">{{ app.digital_signature }}</div>
+                    </div>
+                    <div>
+                        <div class="field-label">Declaration Accepted</div>
+                        <div class="field-value">
+                            {% if app.declaration_accepted %}
+                                <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">✓ Accepted</span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">✗ Not Accepted</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">Anything else you would like the Selection Committee to consider?</div>
+                    <div class="field-value whitespace-pre-line {% if not app.additional_information %}empty{% endif %}">{{ app.additional_information|default:'—' }}</div>
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">Supporting Material</div>
+                    {% if app.supporting_material %}
+                        <a href="{{ app.supporting_material.url }}" target="_blank" class="inline-flex items-center gap-2 rounded-xl bg-blue-100 border border-blue-300 px-4 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-200 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v12m-16 0h16m-16-8h8m-8 4h8m4-8h-4m4 0h4m-4 0v4"></path></svg>
+                            Download Supporting File
+                        </a>
+                    {% else %}
+                        <div class="field-value empty">—</div>
+                    {% endif %}
+                </div>
+                <div class="mt-6">
+                    <div class="field-label mb-2">Submitted</div>
+                    <div class="field-value font-mono text-xs">{{ app.submitted_at|date:"d M Y \a\t H:i" }}</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Committee Assessment Sidebar -->
+        <aside class="">
+            <form method="post" class="rounded-3xl border border-slate-200 bg-white p-6 md:p-8 shadow-soft sticky top-0 z-40">
+                {% csrf_token %}
+                <div class="pb-2 mb-2 border-b border-slate-200">
+                    <p class="text-xs font-bold uppercase tracking-[.18em] text-orange-600">Assessment</p>
+                    <h3 class="mt-1 text-2xl font-bold tracking-tight text-ink">Committee Review</h3>
+                </div>
+
+                <p class="text-xs leading-5 text-slate-600 mb-1">Rate each criterion from 0–10. The total is converted to /100.</p>
+
+                <div class="space-y-2 mb-2">
+                    {% for field,label in score_fields %}
+                    <div class="group">
+                        <label class="flex items-center justify-between text-sm font-medium text-ink">
+                            <span>{{ label }}</span>
+                            <span class="text-xs text-slate-400 group-hover:text-slate-600 transition-colors">0–10</span>
+                        </label>
+                        <input 
+                            name="{{ field }}" 
+                            type="number" 
+                            min="0" 
+                            max="10" 
+                            value="{{ app|get_attr:field|default:0 }}" 
+                            class="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-900 placeholder-slate-400 transition-colors focus:border-orange-500 focus:ring-orange-500 focus:ring-2 outline-none"
+                        >
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="h-px bg-slate-200 mb-2"></div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-ink mb-2">Decision</label>
+                    <select name="status" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-900 transition-colors focus:border-orange-500 focus:ring-orange-500 focus:ring-2 outline-none">
+                        {% for value,label in statuses %}
+                        <option value="{{ value }}" {% if app.status == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-ink mb-2">Committee Notes</label>
+                    <textarea 
+                        name="committee_notes" 
+                        rows="5" 
+                        class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-orange-500 focus:ring-orange-500 focus:ring-2 outline-none resize-none"
+                    >{{ app.committee_notes }}</textarea>
+                </div>
+
+                <button type="submit" class="w-full rounded-xl bg-orange-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-600/20 hover:bg-orange-700 transition-colors">
+                    Save Assessment
+                </button>
+            </form>
+        </aside>
+    </div>
+</main>
+
+</body>
+</html>
