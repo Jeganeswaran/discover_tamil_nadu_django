@@ -3,6 +3,7 @@ from django.contrib.auth.views import LogoutView
 from . import views
 
 app_name = 'applications'
+
 urlpatterns = [
     path('', views.ApplicationFormView.as_view(), name='application-form'),
     path('thank-you/', views.ThankYouView.as_view(), name='thank-you'),

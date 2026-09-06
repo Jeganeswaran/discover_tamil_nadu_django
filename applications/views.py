@@ -6,6 +6,7 @@ from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import View
 from django.views.generic import FormView, TemplateView
@@ -116,7 +117,7 @@ def suggested_score(app):
 class StaffRequiredMixin(UserPassesTestMixin):
     """Require an active staff user for committee views."""
 
-    login_url = '/committee/login/'
+    login_url = reverse_lazy('applications:committee-login')
 
     def test_func(self):
         """

@@ -1,143 +1,165 @@
 {% load dtn %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Committee Dashboard | Discover Tamil Nadu</title></head>
-<body class="bg-slate-50 text-slate-900">
-<header class="bg-[#8f1d24] text-white">
-    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-            {% if brand.logo %}
-            <img src="{{brand.logo.url}}"  class="h-12 w-auto rounded-lg bg-white p-1 object-contain">
-            {% endif %}
-            <div><p class="text-[10px] uppercase tracking-[.2em] text-white/60">Discover Tamil Nadu 2026–27</p>
-                <h1 class="text-xl md:text-2xl font-black">Selection Committee Workspace</h1></div>
-        </div>
-        <div class="flex items-center gap-2"><a href="{% url 'applications:branding' %}"
-                                                class="rounded-xl border border-white/20 px-3 py-2 text-sm">Logo</a><a
-                href="{% url 'applications:export-xlsx' %}"
-                class="rounded-xl bg-white px-3 py-2 text-sm font-bold text-[#8f1d24]">Excel</a><a
-                href="{% url 'applications:export-csv' %}" class="rounded-xl border border-white/20 px-3 py-2 text-sm">CSV</a>
-            <form method="post" action="/committee/logout/" class="inline">{% csrf_token %}
-                <button class="rounded-xl border border-white/20 px-3 py-2 text-sm">Logout</button>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description"
+              content="Discover Tamil Nadu 2026-2027 - Selection Committee Dashboard">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Discover Tamil Nadu 2026-2027</title>
+    </head>
+    <body class="bg-slate-50 text-slate-900">
+        <header class="bg-[#8f1d24] text-white">
+            <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    {% if brand.logo %}
+                        <img src="{{ brand.logo.url }}"
+                             alt="{{ brand.name }}"
+                             class="h-12 w-auto rounded-lg bg-white p-1 object-contain">
+                    {% endif %}
+                    <div>
+                        <p class="text-[10px] uppercase tracking-[.2em] text-white/60">Discover Tamil Nadu 2026-27</p>
+                        <h1 class="text-xl md:text-2xl font-black">Selection Committee Dashboard</h1>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{% url 'applications:branding' %}"
+                       class="rounded-xl border border-white/20 px-3 py-2 text-sm">Logo</a>
+                    <a href="{% url 'applications:export-xlsx' %}"
+                       class="rounded-xl bg-white px-3 py-2 text-sm font-bold text-[#8f1d24]">Excel</a>
+                    <form method="post"
+                          action="{% url 'applications:committee-logout' %}"
+                          class="inline">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="rounded-xl border border-white/20 px-3 py-2 text-sm">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+        <main class="max-w-7xl mx-auto px-5 py-7">
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                {% for key,label in statuses %}
+                    {% if key != "draft" %}
+                        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+                            <div class="text-xs uppercase tracking-wide text-slate-500">{{ label }}</div>
+                            <div class="text-3xl font-black mt-1">{{ stats|get_item:key }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="grid lg:grid-cols-3 gap-5 mb-6">
+                <div class="lg:col-span-2 bg-white border rounded-2xl p-6">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-widest text-[#8f1d24]">Analytics</p>
+                            <h2 class="text-xl font-black mt-1">Selection pipeline</h2>
+                        </div>
+                        <span class="text-sm text-slate-500">{{ total }} applications · {{ countries }} markets</span>
+                    </div>
+                    <div class="mt-6 grid grid-cols-5 gap-2 items-end h-32">
+                        {% for key,label in statuses %}
+                            {% if key != "draft" %}
+                                <div class="text-center">
+                                     <progress class="mx-auto block w-full max-w-14 h-32 accent-[#8f1d24]"
+                                             value="{{ stats|get_item:key }}"
+                                             max="{{ total }}"></progress>
+                                    <div class="text-xs font-bold mt-2">{{ stats|get_item:key }}</div>
+                                    <div class="text-[10px] text-slate-500 truncate">{{ label }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="bg-white border rounded-2xl p-6">
+                    <p class="text-xs font-bold uppercase tracking-widest text-[#8f1d24]">Quick insight</p>
+                    <h2 class="text-xl font-black mt-1">Programme readiness</h2>
+                    <div class="mt-5 space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm"><span>Selected</span><b>{{ selected }}</b></div>
+                            <div class="h-2 bg-slate-100 rounded-full mt-2">
+                                  <progress class="h-2 w-full accent-[#8f1d24]"
+                                          value="{{ selected }}"
+                                          max="{{ total }}"></progress>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm">
+                                <span>International markets</span><b>{{ countries }}</b>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">Unique applicant countries represented.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form class="bg-white border rounded-t-md p-2 flex flex-col md:flex-row gap-2">
+                <input name="q"
+                       value="{{ q }}"
+                       placeholder="Search applicant, country, category or organisation"
+                       class="flex-1 rounded-xl border px-4 py-2">
+                <select name="status" class="rounded-xl border px-4 py-2">
+                    <option value="">All statuses</option>
+                    {% for key,label in statuses %}
+                        <option value="{{ key }}" {% if status == key %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button"
+                        class="rounded-full bg-slate-900 text-white px-6 text-sm py-2 font-bold">Search</button>
             </form>
-        </div>
-    </div>
-</header>
-<main class="max-w-7xl mx-auto px-5 py-7">
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        {% for key,label in statuses %}
-            {% if key != 'draft' %}
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <div class="text-xs uppercase tracking-wide text-slate-500">{{label}}</div>
-                <div class="text-3xl font-black mt-1">{{stats|get_item:key}}</div>
-            </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="grid lg:grid-cols-3 gap-5 mb-6">
-        <div class="lg:col-span-2 bg-white border rounded-2xl p-6">
-            <div class="flex justify-between">
-                <div><p class="text-xs font-bold uppercase tracking-widest text-[#8f1d24]">Analytics</p>
-                    <h2 class="text-xl font-black mt-1">Selection pipeline</h2></div>
-                <span class="text-sm text-slate-500">{{ total }} applications · {{ countries }} markets</span></div>
-            <div class="mt-6 grid grid-cols-5 gap-2 items-end h-32">{% for key,label in statuses %}
-                {% if key != 'draft' %}
-                <div class="text-center">
-                    <div class="mx-auto w-full max-w-14 bg-[#8f1d24]/15 rounded-t-lg"
-                         style="height:{% widthratio stats|get_item:key total 100 %}px;min-height:8px"></div>
-                    <div class="text-xs font-bold mt-2">{{ stats|get_item:key }}</div>
-                    <div class="text-[10px] text-slate-500 truncate">{{ label }}</div>
+            <div class="bg-white border border-t-0 rounded-b-md overflow-hidden">
+                <div class="px-5 py-4 border-b flex justify-between">
+                    <h2 class="font-black">Applications</h2>
+                    <span class="text-sm text-slate-500">{{ applications|length }} shown</span>
                 </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        <div class="bg-white border rounded-2xl p-6"><p
-                class="text-xs font-bold uppercase tracking-widest text-[#8f1d24]">Quick insight</p>
-            <h2 class="text-xl font-black mt-1">Programme readiness</h2>
-            <div class="mt-5 space-y-4">
-                <div>
-                    <div class="flex justify-between text-sm"><span>Selected</span><b>{{ selected }}</b></div>
-                    <div class="h-2 bg-slate-100 rounded-full mt-2">
-                        <div class="h-2 bg-[#8f1d24] rounded-full"
-                             style="width:{% widthratio selected total 100 %}%"></div>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-100 text-left">
+                            <tr>
+                                <th class="p-4">Applicant</th>
+                                <th class="p-4">Market</th>
+                                <th class="p-4">Category</th>
+                                <th class="p-4">Reach</th>
+                                <th class="p-4">Score</th>
+                                <th class="p-4">Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in applications %}
+                                <tr class="border-t hover:bg-slate-50">
+                                    <td class="p-4">
+                                        <b>{{ a.full_name }}</b>
+                                        <div class="text-xs text-slate-500">{{ a.organisation|default:'—' }}</div>
+                                    </td>
+                                    <td class="p-4">{{ a.country_of_residence }}</td>
+                                    <td class="p-4">{{ a.primary_category }}</td>
+                                    <td class="p-4">{{ a.total_audience }}</td>
+                                    <td class="p-4 font-black">
+                                        {% if a.committee_score %}
+                                            {{ a.committee_score }}
+                                        {% else %}
+                                            {{ a|suggested_score }}
+                                        {% endif %}
+                                        <span class="text-xs text-slate-400">/100</span>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{{ a.get_status_display }}</span>
+                                    </td>
+                                    <td class="p-4">
+                                        <a class="text-[#8f1d24] font-bold"
+                                           href="{% url 'applications:application-detail' a.pk %}">Review →</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="7" class="p-12 text-center text-slate-500">No applications found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div>
-                    <div class="flex justify-between text-sm"><span>International markets</span><b>{{ countries }}</b>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-1">Unique applicant countries represented.</p></div>
             </div>
-        </div>
-    </div>
-    <form class="bg-white border rounded-t-md p-2 flex flex-col md:flex-row gap-2">
-        <input name="q" value="{{ q }}" placeholder="Search applicant, country, category or organisation"
-               class="flex-1 rounded-xl border px-4 py-2">
-        <select  name="status" class="rounded-xl border px-4 py-2">
-            <option value="">All statuses</option>
-            {% for key,label in statuses %}
-                <option value="{{key}}" {% if status == key %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-        </select>
-        <button class="rounded-full bg-slate-900 text-white px-6 text-sm py-2 font-bold">Search</button>
-    </form>
-    <div class="bg-white border border-t-0 rounded-b-md overflow-hidden">
-        <div class="px-5 py-4 border-b flex justify-between"><h2 class="font-black">Applications</h2><span
-                class="text-sm text-slate-500">{{ applications|length }} shown</span></div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-slate-100 text-left">
-                <tr>
-                    <th class="p-4">Applicant</th>
-                    <th class="p-4">Market</th>
-                    <th class="p-4">Category</th>
-                    <th class="p-4">Reach</th>
-                    <th class="p-4">Score</th>
-                    <th class="p-4">Status</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>{% for a in applications %}
-                <tr class="border-t hover:bg-slate-50">
-                    <td class="p-4"><b>{{ a.full_name }}</b>
-                        <div class="text-xs text-slate-500">{{ a.organisation|default:'—' }}</div>
-                    </td>
-                    <td class="p-4">{{ a.country_of_residence }}</td>
-                    <td class="p-4">{{ a.primary_category }}</td>
-                    <td class="p-4">{{ a.total_audience }}</td>
-                    <td class="p-4 font-black">
-                        {% if a.committee_score %}
-                            {{ a.committee_score }}
-                        {% else %}
-                            {{ a|suggested_score }}
-                        {% endif %}
-                        <span class="text-xs text-slate-400">/100</span>
-                    </td>
-                    <td class="p-4">
-                        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">
-                            {{ a.get_status_display }}
-                        </span>
-                    </td>
-                    <td class="p-4">
-                        <a class="text-[#8f1d24] font-bold"
-                           href="{% url 'applications:application-detail' a.pk %}">
-                            Review →
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="p-12 text-center text-slate-500">No applications found.</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</main>
-</body>
+        </main>
+    </body>
 </html>

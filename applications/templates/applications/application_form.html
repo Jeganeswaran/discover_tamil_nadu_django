@@ -1,794 +1,1298 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="width=device-width, initial-scale=1">
-  <title>Discover Tamil Nadu 2026-27 | International FAM Tour</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config={theme:{extend:{colors:{tn:{50:'#fff7ed',100:'#ffedd5',500:'#f97316',600:'#ea580c',700:'#c2410c',900:'#7c2d12'},ink:'#172033'},boxShadow:{soft:'0 18px 55px rgba(23,32,51,.08)'}}}}
-  </script>
-  <style>
-    [data-step]{display:none}[data-step].active{display:block}
-    .hero-glow{background-image:radial-gradient(circle at 20% 20%,#f97316 0,transparent 32%),radial-gradient(circle at 90% 5%,#fbbf24 0,transparent 24%)}
-    .progress-bar{width:var(--progress-width,7.69%)}
-    .field{
-      width:100%;
-      border:1px solid #dbe2ea;
-      border-radius:14px;
-      padding:.78rem .9rem;
-      background:white;
-      outline:none;
-      transition:.2s
-    }
-    .field:focus{
-      border-color:#ea580c;
-      box-shadow:0 0 0 4px rgba(234,88,12,.10)
-    }
-    .label{display:block;font-size:.9rem;font-weight:700;color:#273449;margin-bottom:.45rem}
-    .hint{font-size:.78rem;color:#718096;margin-top:.35rem}
-    .choice input{position:absolute;opacity:0;pointer-events:none}
-    .choice span{display:flex;align-items:center;gap:.65rem;border:1px solid #dbe2ea;border-radius:14px;padding:.8rem .9rem;background:white;cursor:pointer;transition:.18s}
-    .choice span:before{content:'';width:18px;height:18px;border:1.5px solid #b7c2cf;border-radius:50%;flex:0 0 auto}
-    .choice input:checked+span{border-color:#ea580c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(234,88,12,.08)}
-    .choice input:checked+span:before{border:5px solid #ea580c;background:white}
-    .check span:before{border-radius:5px}.check input:checked+span:before{border:4px solid #ea580c;background:#ea580c;box-shadow:inset 0 0 0 2px white}
-    .step-dot.done{background:#16a34a;color:white;border-color:#16a34a}.step-dot.current{background:#ea580c;color:white;border-color:#ea580c}
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-800 antialiased">
-  <header class="relative overflow-hidden bg-ink text-white">
-    <div class="hero-glow absolute inset-0 opacity-20"></div>
-    <div class="relative mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-11">
-      <div class="absolute right-5 top-5 md:right-8 md:top-8">
-        {% if brand and brand.logo %}<img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="h-14 md:h-20 w-auto max-w-[180px] rounded-xl bg-white/95 p-2 object-contain shadow-lg">{% else %}<img src="{% static 'applications/images/discover-tamil-nadu-logo.svg' %}" alt="Discover Tamil Nadu" class="h-14 md:h-20 w-auto max-w-[180px] rounded-xl bg-white p-1 object-contain shadow-lg">{% endif %}
-      </div>
-      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div class="max-w-3xl">
-          <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-orange-100">Government of Tamil Nadu · Department of Tourism</div>
-          <p class="text-sm font-semibold uppercase tracking-[.22em] text-orange-300">Discover Tamil Nadu 2026-27</p>
-          <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">International FAM Tour Application</h1>
-          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">Registration & Expression of Interest for international influencers, travel media and travel trade professionals.</p>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="width=device-width, initial-scale=1">
+    <title>Discover Tamil Nadu 2026-27 | International FAM Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tn: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            900: '#7c2d12'
+                        },
+                        ink: '#172033'
+                    },
+                    boxShadow: {
+                        soft: '0 18px 55px rgba(23,32,51,.08)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [data-step] {
+            display: none
+        }
+
+        [data-step].active {
+            display: block
+        }
+
+        .hero-background {
+            min-height: 300px;
+            background-image: linear-gradient(90deg, rgb(153 153 153 / 56%), rgb(16 16 16 / 66%)), url(https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=2200&q=85);
+            background-position: center;
+            background-size: cover
+        }
+
+        @media (max-width:640px) {
+            .hero-background {
+                min-height: 320px
+            }
+        }
+
+        .hero-glow {
+            background-image: radial-gradient(circle at 20% 20%, #f97316 0, transparent 32%), radial-gradient(circle at 90% 5%, #fbbf24 0, transparent 24%)
+        }
+
+        .progress-bar {
+            width: var(--progress-width, 7.69%)
+        }
+
+        .field {
+            width: 100%;
+            border: 1px solid #dbe2ea;
+            border-radius: 14px;
+            padding: .78rem .9rem;
+            background: white;
+            outline: none;
+            transition: .2s
+        }
+
+        .field:focus {
+            border-color: #ea580c;
+            box-shadow: 0 0 0 4px rgba(234, 88, 12, .10)
+        }
+
+        .label {
+            display: block;
+            font-size: .9rem;
+            font-weight: 700;
+            color: #273449;
+            margin-bottom: .45rem
+        }
+
+        .hint {
+            font-size: .78rem;
+            color: #718096;
+            margin-top: .35rem
+        }
+
+        .choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .choice span {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            border: 1px solid #dbe2ea;
+            border-radius: 14px;
+            padding: .8rem .9rem;
+            background: white;
+            cursor: pointer;
+            transition: .18s
+        }
+
+        .choice span:before {
+            content: '';
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid #b7c2cf;
+            border-radius: 50%;
+            flex: 0 0 auto
+        }
+
+        .choice input:checked+span {
+            border-color: #ea580c;
+            background: #fff7ed;
+            color: #9a3412;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, .08)
+        }
+
+        .choice input:checked+span:before {
+            border: 5px solid #ea580c;
+            background: white
+        }
+
+        .check span:before {
+            border-radius: 5px
+        }
+
+        .check input:checked+span:before {
+            border: 4px solid #ea580c;
+            background: #ea580c;
+            box-shadow: inset 0 0 0 2px white
+        }
+
+        .step-dot.done {
+            background: #16a34a;
+            color: white;
+            border-color: #16a34a
+        }
+
+        .step-dot.current {
+            background: #ea580c;
+            color: white;
+            border-color: #ea580c
+        }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 antialiased">
+    <header class="hero-background relative overflow-hidden bg-ink text-white">
+      <div class="hero-glow absolute inset-0 opacity-20"></div>
+      <div class="relative mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-11">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between h-[200px] lg:h-[180px]">
+          <div class="max-w-3xl">
+            <p class="text-sm font-semibold uppercase tracking-[.22em] text-orange-300">Discover Tamil Nadu 2026-27</p>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">International FAM Tour Application</h1>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">Registration & Expression of Interest for international influencers, travel media and travel trade professionals.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 sm:flex">
+            <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
+              <div class="text-xs text-slate-300">FAM Tour</div>
+              <div class="mt-1 font-semibold">12-20 Jan 2027</div>
+            </div>
+          </div>
         </div>
-        <div class="grid grid-cols-2 gap-3 sm:flex">
-          <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><div class="text-xs text-slate-300">FAM Tour</div><div class="mt-1 font-semibold">12-20 Jan 2027</div></div>
-          <div class="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur"><div class="text-xs text-slate-300">Participants</div><div class="mt-1 font-semibold">Maximum 10</div></div>
+      </div>
+    </header>
+    <div class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 px-5 py-3 backdrop-blur lg:hidden">
+      <div class="mx-auto max-w-3xl">
+        <div class="flex items-center justify-between text-xs font-semibold"><span id="mobileStepTitle">Applicant details</span><span id="mobileProgressText">1 of 13</span></div>
+        <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+          <div id="mobileProgress"
+               class="progress-bar h-full rounded-full bg-orange-600 transition-all"></div>
         </div>
       </div>
     </div>
-  </header>
-
-  <div class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 px-5 py-3 backdrop-blur lg:hidden">
-    <div class="mx-auto max-w-3xl"><div class="flex items-center justify-between text-xs font-semibold"><span id="mobileStepTitle">Applicant details</span><span id="mobileProgressText">1 of 13</span></div><div class="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100"><div id="mobileProgress" class="progress-bar h-full rounded-full bg-orange-600 transition-all"></div></div></div>
-  </div>
-
-  <main class="mx-auto grid max-w-7xl gap-7 px-5 py-8 md:px-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:py-10">
-    <aside class="hidden lg:block">
-      <div class="sticky top-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-soft">
-        <div class="mb-5"><p class="text-xs font-bold uppercase tracking-wider text-orange-600">Your application</p><div class="mt-2 flex items-end justify-between"><span class="text-2xl font-bold text-ink" id="desktopPercent">8%</span><span class="text-xs text-slate-500">completed</span></div><div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"><div id="desktopProgress" class="progress-bar h-full bg-orange-600 transition-all"></div></div></div>
-        <nav id="stepNav" class="space-y-1"></nav>
-        <div class="mt-5 rounded-2xl bg-orange-50 p-4 text-xs leading-5 text-orange-900"><strong class="block mb-1">Helpful tip</strong>Your entries are saved locally in this browser while you work. You can return to earlier sections before submitting.</div>
-      </div>
-    </aside>
-
-    <section class="min-w-0">
-      <div class="mb-6 rounded-3xl border border-orange-100 bg-gradient-to-r from-orange-50 to-amber-50 p-5 md:p-6">
-        <div class="flex gap-4"><div class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-600 text-white sm:flex">i</div><div><h2 class="font-bold text-ink">Before you begin</h2><p class="mt-1 text-sm leading-6 text-slate-600">Selection is based on professional profile, international market relevance, audience/business reach, tourism influence, language reach, content potential and ability to promote Tamil Nadu after the FAM Tour. Submission does not guarantee selection.</p></div></div>
-      </div>
-
-      {% if form.errors %}
-      <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"><strong>Please review the highlighted information.</strong> Some required values are missing or invalid. You can move between sections using the step navigation.</div>
-      {% endif %}
-
-      <form id="famForm" method="post" enctype="multipart/form-data" novalidate class="rounded-3xl border border-slate-200 bg-white shadow-soft">
-        {% csrf_token %}
-        <div class="p-5 sm:p-7 lg:p-9">
-
-          <section data-step="1" data-title="Applicant details" class="active">
-            <step-header eyebrow="Section 1" title="Tell us about yourself"></step-header>
-            <div class="grid gap-5 md:grid-cols-2">
-              <div><label class="label">Full Name <b class="text-orange-600">*</b></label><input class="field" name="full_name" autocomplete="name" required value="{{ request.POST.full_name }}" placeholder="e.g. Alex Morgan"></div>
-              <div><label class="label">Nationality <b class="text-orange-600">*</b></label><input class="field" name="nationality" required value="{{ request.POST.nationality }}" placeholder="e.g. French"></div>
-              <div><label class="label">Country of Residence <b class="text-orange-600">*</b></label><input class="field" name="country_of_residence" required value="{{ request.POST.country_of_residence }}" placeholder="Country"></div>
-              <div><label class="label">City / State / Province <b class="text-orange-600">*</b></label><input class="field" name="city_state_province" required value="{{ request.POST.city_state_province }}" placeholder="City, region"></div>
-              <div class="md:col-span-2"><label class="label">Address <b class="text-orange-600">*</b></label><textarea class="field min-h-24" name="address" required placeholder="Your correspondence address">{{ request.POST.address }}</textarea></div>
-              <div><label class="label">Email Address <b class="text-orange-600">*</b></label><input class="field" type="email" name="email" autocomplete="email" required value="{{ request.POST.email }}" placeholder="you@example.com"></div>
-              <div><label class="label">Mobile / WhatsApp Number <b class="text-orange-600">*</b></label><input class="field" name="mobile_whatsapp" autocomplete="tel" required value="{{ request.POST.mobile_whatsapp }}" placeholder="Include country code"></div>
-              <div><label class="label">Preferred Language of Communication</label><input class="field" name="preferred_language" value="{{ request.POST.preferred_language }}" placeholder="e.g. English"></div>
-              <div><label class="label">Age Group</label><select class="field" name="age_group"><option value="">Select age group</option><option>18-25</option><option>26-35</option><option>36-45</option><option>46-55</option><option>56+</option></select></div>
+    <main class="mx-auto grid max-w-7xl gap-7 px-5 py-8 md:px-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:py-10">
+      <aside class="hidden lg:block">
+        <div class="sticky top-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-soft">
+          <div class="mb-5">
+            <p class="text-xs font-bold uppercase tracking-wider text-orange-600">Your application</p>
+            <div class="mt-2 flex items-end justify-between"><span class="text-2xl font-bold text-ink" id="desktopPercent">8%</span><span class="text-xs text-slate-500">completed</span></div>
+            <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div id="desktopProgress"
+                   class="progress-bar h-full bg-orange-600 transition-all"></div>
             </div>
-          </section>
-
-          <section data-step="2" data-title="Professional category">
-            <step-header eyebrow="Section 2" title="Your professional category"></step-header>
-            <label class="label mb-3">Please select your primary category <b class="text-orange-600">*</b></label>
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <label class="choice"><input type="radio" name="primary_category" value="Social Media Influencer" required><span>Social Media Influencer</span></label>
-              <label class="choice"><input type="radio" name="primary_category" value="Travel Journalist"><span>Travel Journalist</span></label>
-              <label class="choice"><input type="radio" name="primary_category" value="Travel Media Representative"><span>Travel Media Representative</span></label>
-              <label class="choice"><input type="radio" name="primary_category" value="Travel Agent"><span>Travel Agent</span></label>
-              <label class="choice"><input type="radio" name="primary_category" value="Tour Operator"><span>Tour Operator</span></label>
-              <label class="choice"><input type="radio" name="primary_category" value="Destination Management Company (DMC)"><span>Destination Management Company (DMC)</span></label>
-              <label class="choice"><input type="radio" name="primary_category" value="Other Tourism Professional"><span>Other Tourism Professional</span></label>
-            </div>
-            <div class="mt-5" data-show-when="primary_category:Other Tourism Professional"><label class="label">Other Tourism Professional</label><input class="field" name="other_professional_category" placeholder="Please specify"></div>
-            <div class="mt-7 grid gap-5 md:grid-cols-2">
-              <div><label class="label">Organisation / Media House / Company</label><input class="field" name="organisation" value="{{ request.POST.organisation }}"></div>
-              <div><label class="label">Designation / Professional Role</label><input class="field" name="designation" value="{{ request.POST.designation }}"></div>
-              <div><label class="label">Website / Professional Profile</label><input class="field" type="url" name="website" value="{{ request.POST.website }}" placeholder="https://"></div>
-              <div><label class="label">Years of Professional Experience</label><input class="field" type="number" min="0" name="years_experience" value="{{ request.POST.years_experience }}" placeholder="e.g. 8"></div>
-            </div>
-          </section>
-
-          <section data-step="3" data-title="Professional profile">
-            <step-header eyebrow="Section 3" title="Professional profile"></step-header>
-            <div class="space-y-6">
-              <div><div class="flex items-center justify-between"><label class="label">Short Bio — Maximum 200 Words <b class="text-orange-600">*</b></label><span class="text-xs text-slate-400"><span data-word-count="short_bio">0</span>/200 words</span></div><textarea class="field min-h-40" name="short_bio" required data-max-words="200" placeholder="Introduce your professional background, areas of work, target markets and involvement in travel, tourism, media or destination promotion.">{{ request.POST.short_bio }}</textarea></div>
-              <div><label class="label">Awards, Recognitions & Achievements</label><textarea class="field min-h-32" name="awards" placeholder="Relevant awards, publications, campaigns or professional achievements">{{ request.POST.awards }}</textarea></div>
-              <div><label class="label">Previous International / Destination FAM Experience</label><p class="mb-3 text-sm text-slate-500">Have you participated in a tourism FAM / familiarisation trip previously?</p><div class="grid max-w-md grid-cols-2 gap-3"><label class="choice"><input type="radio" name="fam_experience" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="fam_experience" value="No"><span>No</span></label></div></div>
-              <div data-show-when="fam_experience:Yes"><label class="label">If yes, please provide details</label><textarea class="field min-h-28" name="fam_experience_details">{{ request.POST.fam_experience_details }}</textarea></div>
-            </div>
-          </section>
-
-          <section data-step="4" data-title="India & Tamil Nadu experience">
-            <step-header eyebrow="Section 4" title="India & Tamil Nadu experience"></step-header>
-            <div class="space-y-7">
-              <question-radio title="Have you visited India before?" name="visited_india" required></question-radio>
-              <div data-show-when="visited_india:Yes" class="grid gap-5 md:grid-cols-2"><div><label class="label">Which State(s) / Union Territory(ies) have you visited?</label><textarea class="field min-h-24" name="india_states">{{ request.POST.india_states }}</textarea></div><div><label class="label">When did you last visit India?</label><select class="field" name="last_india_visit"><option value="">Select</option><option>Within the last 12 months</option><option>1-3 years ago</option><option>More than 3 years ago</option></select></div></div>
-              <question-radio title="Have you visited Tamil Nadu before?" name="visited_tamil_nadu" required></question-radio>
-              <div data-show-when="visited_tamil_nadu:Yes"><label class="label">If yes, please mention the destinations visited</label><textarea class="field min-h-24" name="tamil_nadu_destinations">{{ request.POST.tamil_nadu_destinations }}</textarea></div>
-              <question-radio title="Have you previously published, broadcast or promoted India / Tamil Nadu?" name="promoted_india_tn"></question-radio>
-              <div data-show-when="promoted_india_tn:Yes"><label class="label">Please provide links or details</label><textarea class="field min-h-24" name="promoted_india_tn_details">{{ request.POST.promoted_india_tn_details }}</textarea></div>
-            </div>
-          </section>
-
-          <section data-step="5" data-title="Digital & media profile">
-            <step-header eyebrow="Section 5" title="Digital & media profile"></step-header>
-            <div class="grid gap-5 md:grid-cols-2"><div><label class="label">Instagram</label><input class="field" name="instagram" placeholder="Profile URL or @handle"></div><div><label class="label">Facebook</label><input class="field" name="facebook"></div><div><label class="label">X</label><input class="field" name="x"></div><div><label class="label">LinkedIn</label><input class="field" name="linkedin"></div><div><label class="label">YouTube</label><input class="field" name="youtube"></div><div><label class="label">TikTok / Other</label><input class="field" name="tiktok_other"></div></div>
-            <div class="mt-7 grid gap-5 md:grid-cols-2"><div><label class="label">Approximate Total Audience / Followers <b class="text-orange-600">*</b></label><input class="field" name="total_audience" required placeholder="e.g. 350,000"></div><div><label class="label">Primary Audience Countries / Regions <b class="text-orange-600">*</b></label><input class="field" name="audience_regions" required placeholder="e.g. France, Belgium, Switzerland"></div><div><label class="label">Primary Audience Language(s) <b class="text-orange-600">*</b></label><input class="field" name="audience_languages" required placeholder="e.g. French, English"></div><div><label class="label">Approximate Average Monthly Reach / Views</label><input class="field" name="monthly_reach" placeholder="e.g. 1.2M views"></div><div><label class="label">Average Engagement Rate, if available</label><input class="field" name="engagement_rate" placeholder="e.g. 4.8%"></div></div>
-            <div class="mt-7"><label class="label">2-3 relevant travel stories, articles, videos or destination campaigns</label><div class="space-y-3"><input class="field" type="url" name="content_links" placeholder="https://"><input class="field" type="url" name="content_links" placeholder="https://"><input class="field" type="url" name="content_links" placeholder="https://"></div></div>
-          </section>
-
-          <section data-step="6" data-title="Language & regional reach">
-            <step-header eyebrow="Section 6" title="Language & regional reach"></step-header>
-            <div><label class="label">Languages in which you can communicate professionally <b class="text-orange-600">*</b></label><p class="hint mb-4">List the languages in which you can reach and communicate with your audience.</p><div id="languageRows" class="space-y-3"></div><button type="button" id="addLanguage" class="mt-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">+ Add language</button></div>
-            <div class="mt-7 grid gap-5 md:grid-cols-2"><div><label class="label">Language(s) you would use to share your Tamil Nadu experience <b class="text-orange-600">*</b></label><input class="field" name="post_fam_languages" required placeholder="e.g. German and English"></div><div><label class="label">Countries / regions you can effectively reach through these languages</label><textarea class="field min-h-24" name="language_reach_regions"></textarea></div></div>
-          </section>
-
-          <section data-step="7" data-title="Areas of interest">
-            <step-header eyebrow="Section 7" title="What would you like to explore?"></step-header>
-            <label class="label mb-3">Areas of Tamil Nadu tourism you are interested in exploring <b class="text-orange-600">*</b></label>
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <label class="choice check"><input type="checkbox" name="tourism_interests" value="Culture & Heritage"><span>Culture & Heritage</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Temples & Spiritual Tourism"><span>Temples & Spiritual Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Pongal & Traditional Festivals"><span>Pongal & Traditional Festivals</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Cuisine & Culinary Tourism"><span>Cuisine & Culinary Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Nature & Wildlife"><span>Nature & Wildlife</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Beaches & Coastal Tourism"><span>Beaches & Coastal Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Wellness & Ayurveda"><span>Wellness & Ayurveda</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Adventure Tourism"><span>Adventure Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Rural & Community Tourism"><span>Rural & Community Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Luxury Tourism"><span>Luxury Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Family Tourism"><span>Family Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="MICE / Business Tourism"><span>MICE / Business Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Wedding Tourism"><span>Wedding Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Film Tourism"><span>Film Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Sustainable Tourism"><span>Sustainable Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Other"><span>Other</span></label>
-            </div>
-            <div class="mt-5">
-              <label class="label">Other area of interest</label>
-              <input class="field" name="other_tourism_interest">
-            </div>
-            <div class="mt-7 grid gap-5 md:grid-cols-2">
-              <div>
-                <label class="label">What would you most like to experience or discover in Tamil Nadu?</label>
-                <textarea class="field min-h-32" name="desired_experience"></textarea>
-              </div>
-              <div>
-                <label class="label">Which Tamil Nadu destinations are you already familiar with?</label>
-                <textarea class="field min-h-32" name="familiar_destinations"></textarea>
-              </div>
-            </div>
-          </section>
-
-          <section data-step="8" data-title="Post-FAM promotion">
-            <step-header eyebrow="Section 8" title="Post-FAM promotion commitment"></step-header>
-            <label class="label mb-3">How will you help showcase Tamil Nadu in your region / market? <b class="text-orange-600">*</b></label>
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <label class="choice check"><input type="checkbox" name="promotion_channels" value="Social Media Posts / Reels"><span>Social Media Posts / Reels</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="YouTube / Video Content"><span>YouTube / Video Content</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Television / Broadcast Features"><span>Television / Broadcast Features</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Newspaper / Magazine Articles"><span>Newspaper / Magazine Articles</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Online Travel Media / Publications"><span>Online Travel Media / Publications</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Destination Features / Travel Stories"><span>Destination Features / Travel Stories</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Podcasts / Interviews"><span>Podcasts / Interviews</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Travel Trade Presentations"><span>Travel Trade Presentations</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="B2B Meetings"><span>B2B Meetings with Travel Agents / Tour Operators</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Develop / Promote Tamil Nadu Travel Packages"><span>Develop / Promote Tamil Nadu Travel Packages</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Include Tamil Nadu in Future Tours"><span>Include Tamil Nadu in Future Tours</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Tourism Exhibitions / Trade Events"><span>Tourism Exhibitions / Trade Events</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Community / Speaking Events"><span>Community / Speaking Events</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Other"><span>Other</span></label>
-            </div>
-            <div class="mt-5">
-              <label class="label">Other promotion channel</label>
-              <input class="field" name="other_promotion_channel"></div>
-            <div class="mt-7">
-              <label class="label">Proposed Post-FAM Promotion Plan <b class="text-orange-600">*</b></label>
-              <textarea class="field min-h-40" name="promotion_plan" required placeholder="How will you showcase Tamil Nadu to your audience, clients, travel trade network or region?"></textarea>
-            </div>
-            <div class="mt-7">
-              <label class="label mb-3">What type of content do you expect to produce?</label>
-              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Articles">
-                  <span>Articles</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Videos">
-                  <span>Videos</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Reels / Short Videos">
-                  <span>Reels / Short Videos</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Social Media Posts">
-                  <span>Social Media Posts</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Television / Broadcast">
-                  <span>Television / Broadcast</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Podcast">
-                  <span>Podcast</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Photography">
-                  <span>Photography</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Travel Packages">
-                  <span>Travel Packages</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="B2B Presentations">
-                  <span>B2B Presentations</span>
-                </label>
-                <label class="choice check">
-                  <input type="checkbox" name="expected_content_types" value="Other">
-                  <span>Other</span>
-                </label>
-              </div>
-            </div>
-            <div class="mt-7 grid gap-5 md:grid-cols-2">
-              <div>
-                <label class="label">How many content / promotional outputs do you expect to create?</label>
-                <select class="field" name="output_count">
-                  <option value="">Select</option>
-                  <option>1-3</option>
-                  <option>4-6</option>
-                  <option>7-10</option>
-                  <option>More than 10</option>
-                </select>
-              </div>
-              <div>
-                <label class="label">Expected timeline for post-FAM coverage</label>
-                <select class="field" name="coverage_timeline">
-                  <option value="">Select</option>
-                  <option>Within 2 weeks</option>
-                  <option>Within 1 month</option>
-                  <option>Within 3 months</option>
-                  <option>Ongoing / Long-term</option>
-                </select>
-              </div>
-            </div>
-            <div class="mt-5">
-              <label class="label">What specific value can you bring to Tamil Nadu Tourism in your market?</label>
-              <textarea class="field min-h-32" name="market_value"></textarea>
-            </div>
-          </section>
-
-          <section data-step="9" data-title="Travel trade potential">
-            <step-header eyebrow="Section 9" title="Travel trade potential"></step-header>
-            <div class="mb-6 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">For Travel Agents, Tour Operators, DMCs and relevant tourism professionals.</div>
-            <div class="space-y-7"><question-radio title="Do you currently sell or promote India as a destination?" name="sells_india"></question-radio><question-radio title="Do you currently offer Tamil Nadu in your travel programmes / packages?" name="offers_tamil_nadu"></question-radio>
-              <div><label class="label">Would you consider introducing Tamil Nadu into your existing travel programmes after the FAM?</label><div class="grid max-w-xl grid-cols-3 gap-3"><label class="choice"><input type="radio" name="introduce_tamil_nadu" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="introduce_tamil_nadu" value="Maybe"><span>Maybe</span></label><label class="choice"><input type="radio" name="introduce_tamil_nadu" value="No"><span>No</span></label></div></div>
-              <div><label class="label">Would you be interested in developing a dedicated Tamil Nadu itinerary / package?</label><div class="grid max-w-xl grid-cols-3 gap-3"><label class="choice"><input type="radio" name="dedicated_tn_package" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="dedicated_tn_package" value="Maybe"><span>Maybe</span></label><label class="choice"><input type="radio" name="dedicated_tn_package" value="No"><span>No</span></label></div></div>
-              <div><label class="label mb-3">Tamil Nadu tourism products with the strongest potential in your market</label><div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><label class="choice check"><input type="checkbox" name="strong_products" value="Culture & Heritage"><span>Culture & Heritage</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Spiritual Tourism"><span>Spiritual Tourism</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Luxury Travel"><span>Luxury Travel</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Wellness"><span>Wellness</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Adventure"><span>Adventure</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Wildlife & Nature"><span>Wildlife & Nature</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Beach & Coastal"><span>Beach & Coastal</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Culinary Tourism"><span>Culinary Tourism</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Family Travel"><span>Family Travel</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="MICE"><span>MICE</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Wedding Tourism"><span>Wedding Tourism</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Other"><span>Other</span></label></div></div>
-              <div class="grid gap-5 md:grid-cols-2"><div><label class="label">Approximate number of travellers / clients handled annually</label><input class="field" name="annual_clients"></div><div><question-radio title="Interested in future B2B engagement with Tamil Nadu Tourism and tourism stakeholders?" name="future_b2b"></question-radio></div></div>
-            </div>
-          </section>
-
-          <section data-step="10" data-title="Participant value">
-            <step-header eyebrow="Section 10" title="Participant value & suitability"></step-header>
-            <div class="space-y-6"><div><label class="label">Why should you be selected for the Discover Tamil Nadu International FAM Tour? <b class="text-orange-600">*</b></label><textarea class="field min-h-40" name="selection_reason" required placeholder="Focus on your professional credibility, reach, market relevance and expected impact."></textarea></div><div><label class="label">What unique perspective, audience or market access can you bring?</label><textarea class="field min-h-32" name="unique_perspective"></textarea></div><question-radio title="Are you willing to participate in interviews, photography, video shoots and official promotional activities during the FAM Tour?" name="media_participation"></question-radio><div><label class="label">Are you willing to participate in reasonable post-FAM promotional activities, subject to mutual coordination?</label><div class="grid max-w-2xl gap-3 sm:grid-cols-3"><label class="choice"><input type="radio" name="post_fam_participation" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="post_fam_participation" value="No"><span>No</span></label><label class="choice"><input type="radio" name="post_fam_participation" value="Subject to availability"><span>Subject to availability</span></label></div></div></div>
-          </section>
-
-          <section data-step="11" data-title="Source & availability">
-            <step-header eyebrow="Section 11" title="Programme source & availability"></step-header>
+          </div>
+          <nav id="stepNav" class="space-y-1">
+          </nav>
+          <div class="mt-5 rounded-2xl bg-orange-50 p-4 text-xs leading-5 text-orange-900"><strong class="block mb-1">Helpful tip</strong>Your entries are saved locally in this browser while you work. You can return to earlier sections before submitting.</div>
+        </div>
+      </aside>
+      <section class="min-w-0">
+        <div class="mb-6 rounded-3xl border border-orange-100 bg-gradient-to-r from-orange-50 to-amber-50 p-5 md:p-6">
+          <div class="flex gap-4">
+            <div class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-600 text-white sm:flex">i</div>
             <div>
-              <label class="label mb-3">How did you come to know about Discover Tamil Nadu 2026-27? <b class="text-orange-600">*</b></label>
+              <h2 class="font-bold text-ink">Before you begin</h2>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Selection is based on professional profile, international market relevance, audience/business reach, tourism influence, language reach, content potential and ability to promote Tamil Nadu after the FAM Tour. Submission does not guarantee selection.</p>
+            </div>
+          </div>
+        </div>
+        {% if form.errors %}
+          <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"><strong>Please review the highlighted information.</strong> Some required values are missing or invalid. You can move between sections using the step navigation.</div>
+        {% endif %}
+        <form id="famForm"
+              method="post"
+              enctype="multipart/form-data"
+              novalidate
+              class="rounded-3xl border border-slate-200 bg-white shadow-soft">
+          {% csrf_token %}
+          <div class="p-5 sm:p-7 lg:p-9">
+            <section data-step="1" data-title="Applicant details" class="active">
+              <step-header eyebrow="Section 1" title="Tell us about yourself"></step-header>
+              <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                  <label class="label">Full Name <b class="text-orange-600">*</b></label>
+                  <input class="field"
+                         name="full_name"
+                         autocomplete="name"
+                         required
+                         value="{{ request.POST.full_name }}"
+                         placeholder="e.g. Alex Morgan">
+                </div>
+                <div>
+                  <label class="label">Nationality <b class="text-orange-600">*</b></label>
+                  <input class="field"
+                         name="nationality"
+                         required
+                         value="{{ request.POST.nationality }}"
+                         placeholder="e.g. French">
+                </div>
+                <div>
+                  <label class="label">Country of Residence <b class="text-orange-600">*</b></label>
+                  <input class="field"
+                         name="country_of_residence"
+                         required
+                         value="{{ request.POST.country_of_residence }}"
+                         placeholder="Country">
+                </div>
+                <div>
+                  <label class="label">City / State / Province <b class="text-orange-600">*</b></label>
+                  <input class="field"
+                         name="city_state_province"
+                         required
+                         value="{{ request.POST.city_state_province }}"
+                         placeholder="City, region">
+                </div>
+                <div class="md:col-span-2">
+                  <label class="label">Address <b class="text-orange-600">*</b></label>
+                  <textarea class="field min-h-24"
+                            name="address"
+                            required
+                            placeholder="Your correspondence address">{{ request.POST.address }}</textarea>
+                </div>
+                <div>
+                  <label class="label">Email Address <b class="text-orange-600">*</b></label>
+                  <input class="field"
+                         type="email"
+                         name="email"
+                         autocomplete="email"
+                         required
+                         value="{{ request.POST.email }}"
+                         placeholder="you@example.com">
+                </div>
+                <div>
+                  <label class="label">Mobile / WhatsApp Number <b class="text-orange-600">*</b></label>
+                  <input class="field"
+                         name="mobile_whatsapp"
+                         autocomplete="tel"
+                         required
+                         value="{{ request.POST.mobile_whatsapp }}"
+                         placeholder="Include country code">
+                </div>
+                <div>
+                  <label class="label">Preferred Language of Communication</label>
+                  <input class="field"
+                         name="preferred_language"
+                         value="{{ request.POST.preferred_language }}"
+                         placeholder="e.g. English">
+                </div>
+                <div>
+                  <label class="label">Age Group</label><select class="field" name="age_group">
+                    <option value="">Select age group</option>
+                    <option>18-25</option>
+                    <option>26-35</option>
+                    <option>36-45</option>
+                    <option>46-55</option>
+                    <option>56+</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+            <section data-step="2" data-title="Professional category">
+              <step-header eyebrow="Section 2" title="Your professional category"></step-header>
+              <label class="label mb-3">Please select your primary category <b class="text-orange-600">*</b></label>
               <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="IFTM Top Resa - Paris" required>
-                  <span>IFTM Top Resa - Paris</span>
+                  <input type="radio"
+                         name="primary_category"
+                         value="Social Media Influencer"
+                         required><span>Social Media Influencer</span>
                 </label>
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="Tourism EXPO Japan - Tokyo">
-                  <span>Tourism EXPO Japan - Tokyo</span>
+                  <input type="radio" name="primary_category" value="Travel Journalist"><span>Travel Journalist</span>
                 </label>
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="WTM London">
-                  <span>WTM London</span>
+                  <input type="radio"
+                         name="primary_category"
+                         value="Travel Media Representative"><span>Travel Media Representative</span>
                 </label>
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="Tamil Nadu Tourism Website">
-                  <span>Tamil Nadu Tourism Website</span>
+                  <input type="radio" name="primary_category" value="Travel Agent"><span>Travel Agent</span>
                 </label>
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="Social Media">
-                  <span>Social Media</span>
+                  <input type="radio" name="primary_category" value="Tour Operator"><span>Tour Operator</span>
                 </label>
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="Email / Direct Invitation">
-                  <span>Email / Direct Invitation</span>
+                  <input type="radio"
+                         name="primary_category"
+                         value="Destination Management Company (DMC)"><span>Destination Management Company (DMC)</span>
                 </label>
                 <label class="choice">
-                  <input type="radio" name="programme_source" value="Travel Trade / Industry Contact">
-                  <span>Travel Trade / Industry Contact</span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="programme_source" value="Colleague / Professional Network">
-                  <span>Colleague / Professional Network</span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="programme_source" value="Other">
-                  <span>Other</span>
+                  <input type="radio"
+                         name="primary_category"
+                         value="Other Tourism Professional"><span>Other Tourism Professional</span>
                 </label>
               </div>
-            </div>
-            <div class="mt-5">
-              <label class="label">Other source</label>
-              <input class="field" name="other_programme_source">
-            </div>
-            <div class="mt-7">
-              <label class="label">If selected, will you be available to travel to Tamil Nadu from 12-20 January 2027? <b class="text-orange-600">*</b>
-              </label>
-              <div class="mt-3 grid gap-3 sm:grid-cols-2">
-                <label class="choice">
-                  <input type="radio" name="availability" value="Yes, I confirm my availability" required>
-                  <span>Yes, I confirm my availability</span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="availability" value="I expect to be available">
-                  <span>I expect to be available</span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="availability" value="Unable to confirm at present">
-                  <span>Unable to confirm at present</span>
-                </label>
-                <label class="choice">
-                  <input type="radio" name="availability" value="No">
-                  <span>No</span>
-                </label>
+              <div class="mt-5"
+                   data-show-when="primary_category:Other Tourism Professional">
+                <label class="label">Other Tourism Professional</label>
+                <input class="field"
+                       name="other_professional_category"
+                       placeholder="Please specify">
               </div>
-            </div>
-            <div class="mt-7 grid gap-6 md:grid-cols-2">
+              <div class="mt-7 grid gap-5 md:grid-cols-2">
+                <div>
+                  <label class="label">Organisation / Media House / Company</label>
+                  <input class="field"
+                         name="organisation"
+                         value="{{ request.POST.organisation }}">
+                </div>
+                <div>
+                  <label class="label">Designation / Professional Role</label>
+                  <input class="field"
+                         name="designation"
+                         value="{{ request.POST.designation }}">
+                </div>
+                <div>
+                  <label class="label">Website / Professional Profile</label>
+                  <input class="field"
+                         type="url"
+                         name="website"
+                         value="{{ request.POST.website }}"
+                         placeholder="https://">
+                </div>
+                <div>
+                  <label class="label">Years of Professional Experience</label>
+                  <input class="field"
+                         type="number"
+                         min="0"
+                         name="years_experience"
+                         value="{{ request.POST.years_experience }}"
+                         placeholder="e.g. 8">
+                </div>
+              </div>
+            </section>
+            <section data-step="3" data-title="Professional profile">
+              <step-header eyebrow="Section 3" title="Professional profile"></step-header>
+              <div class="space-y-6">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <label class="label">Short Bio — Maximum 200 Words <b class="text-orange-600">*</b></label><span class="text-xs text-slate-400"><span data-word-count="short_bio">0</span>/200 words</span>
+                  </div>
+                  <textarea class="field min-h-40"
+                            name="short_bio"
+                            required
+                            data-max-words="200"
+                            placeholder="Introduce your professional background, areas of work, target markets and involvement in travel, tourism, media or destination promotion.">{{ request.POST.short_bio }}</textarea>
+                </div>
+                <div>
+                  <label class="label">Awards, Recognitions & Achievements</label>
+                  <textarea class="field min-h-32"
+                            name="awards"
+                            placeholder="Relevant awards, publications, campaigns or professional achievements">{{ request.POST.awards }}</textarea>
+                </div>
+                <div>
+                  <label class="label">Previous International / Destination FAM Experience</label>
+                  <p class="mb-3 text-sm text-slate-500">Have you participated in a tourism FAM / familiarisation trip previously?</p>
+                  <div class="grid max-w-md grid-cols-2 gap-3">
+                    <label class="choice">
+                      <input type="radio" name="fam_experience" value="Yes"><span>Yes</span>
+                    </label>
+                    <label class="choice">
+                      <input type="radio" name="fam_experience" value="No"><span>No</span>
+                    </label>
+                  </div>
+                </div>
+                <div data-show-when="fam_experience:Yes">
+                  <label class="label">If yes, please provide details</label>
+                  <textarea class="field min-h-28"
+                            name="fam_experience_details">{{ request.POST.fam_experience_details }}</textarea>
+                </div>
+              </div>
+            </section>
+            <section data-step="4" data-title="India & Tamil Nadu experience">
+              <step-header eyebrow="Section 4" title="India & Tamil Nadu experience"></step-header>
+              <div class="space-y-7">
+                <question-radio title="Have you visited India before?" name="visited_india" required></question-radio>
+                <div data-show-when="visited_india:Yes" class="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label class="label">Which State(s) / Union Territory(ies) have you visited?</label>
+                    <textarea class="field min-h-24" name="india_states">{{ request.POST.india_states }}</textarea>
+                  </div>
+                  <div>
+                    <label class="label">When did you last visit India?</label>
+                    <select class="field" name="last_india_visit">
+                      <option value="">Select</option>
+                      <option>Within the last 12 months</option>
+                      <option>1-3 years ago</option>
+                      <option>More than 3 years ago</option>
+                    </select>
+                  </div>
+                </div>
+                <question-radio title="Have you visited Tamil Nadu before?" name="visited_tamil_nadu" required></question-radio>
+                <div data-show-when="visited_tamil_nadu:Yes">
+                  <label class="label">If yes, please mention the destinations visited</label>
+                  <textarea class="field min-h-24"
+                            name="tamil_nadu_destinations">{{ request.POST.tamil_nadu_destinations }}</textarea>
+                </div>
+                <question-radio title="Have you previously published, broadcast or promoted India / Tamil Nadu?" name="promoted_india_tn"></question-radio>
+                <div data-show-when="promoted_india_tn:Yes">
+                  <label class="label">Please provide links or details</label>
+                  <textarea class="field min-h-24"
+                            name="promoted_india_tn_details">{{ request.POST.promoted_india_tn_details }}</textarea>
+                </div>
+              </div>
+            </section>
+            <section data-step="5" data-title="Digital & media profile">
+              <step-header eyebrow="Section 5" title="Digital & media profile"></step-header>
+              <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                  <label class="label">Instagram</label><input class="field"
+       name="instagram"
+       placeholder="Profile URL or @handle">
+                </div>
+                <div>
+                  <label class="label">Facebook</label><input class="field" name="facebook">
+                </div>
+                <div>
+                  <label class="label">X</label><input class="field" name="x">
+                </div>
+                <div>
+                  <label class="label">LinkedIn</label><input class="field" name="linkedin">
+                </div>
+                <div>
+                  <label class="label">YouTube</label><input class="field" name="youtube">
+                </div>
+                <div>
+                  <label class="label">TikTok / Other</label><input class="field" name="tiktok_other">
+                </div>
+              </div>
+              <div class="mt-7 grid gap-5 md:grid-cols-2">
+                <div>
+                  <label class="label">Approximate Total Audience / Followers <b class="text-orange-600">*</b></label><input class="field"
+       name="total_audience"
+       required
+       placeholder="e.g. 350,000">
+                </div>
+                <div>
+                  <label class="label">Primary Audience Countries / Regions <b class="text-orange-600">*</b></label><input class="field"
+       name="audience_regions"
+       required
+       placeholder="e.g. France, Belgium, Switzerland">
+                </div>
+                <div>
+                  <label class="label">Primary Audience Language(s) <b class="text-orange-600">*</b></label><input class="field"
+       name="audience_languages"
+       required
+       placeholder="e.g. French, English">
+                </div>
+                <div>
+                  <label class="label">Approximate Average Monthly Reach / Views</label><input class="field"
+       name="monthly_reach"
+       placeholder="e.g. 1.2M views">
+                </div>
+                <div>
+                  <label class="label">Average Engagement Rate, if available</label><input class="field"
+       name="engagement_rate"
+       placeholder="e.g. 4.8%">
+                </div>
+              </div>
+              <div class="mt-7">
+                <label class="label">2-3 relevant travel stories, articles, videos or destination campaigns</label>
+                <div class="space-y-3">
+                  <input class="field" type="url" name="content_links" placeholder="https://"><input class="field" type="url" name="content_links" placeholder="https://"><input class="field" type="url" name="content_links" placeholder="https://">
+                </div>
+              </div>
+            </section>
+            <section data-step="6" data-title="Language & regional reach">
+              <step-header eyebrow="Section 6" title="Language & regional reach"></step-header>
               <div>
-                <label class="label">Do you have a valid passport for travel to India?</label>
-                <select class="field" name="valid_passport">
-                  <option value="">Select</option>
-                  <option>Yes</option>
-                  <option>No</option>
-                  <option>Renewal in progress</option>
-                </select>
+                <label class="label">Languages in which you can communicate professionally <b class="text-orange-600">*</b></label>
+                <p class="hint mb-4">List the languages in which you can reach and communicate with your audience.</p>
+                <div id="languageRows" class="space-y-3"></div>
+                <button type="button"
+                        id="addLanguage"
+                        class="mt-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">+ Add language</button>
               </div>
-              <div>
-                <question-radio title="Are you willing to comply with the programme schedule and participation requirements?" name="comply_schedule"></question-radio>
+              <div class="mt-7 grid gap-5 md:grid-cols-2">
+                <div>
+                  <label class="label">Language(s) you would use to share your Tamil Nadu experience <b class="text-orange-600">*</b></label><input class="field"
+       name="post_fam_languages"
+       required
+       placeholder="e.g. German and English">
+                </div>
+                <div>
+                  <label class="label">Countries / regions you can effectively reach through these languages</label><textarea class="field min-h-24" name="language_reach_regions"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="mt-7 grid gap-6 md:grid-cols-2">
-              <div>
-                <label class="label">Do you have a valid passport for travel to India?</label>
-                <select class="field" name="valid_passport">
-                  <option value="">Select</option>
-                  <option>Yes</option>
-                  <option>No</option>
-                  <option>Renewal in progress</option>
-                </select>
-              </div>
-              <div>
-                <question-radio title="Are you willing to comply with the programme schedule and participation requirements?" name="comply_schedule"></question-radio>
-              </div>
-            </div>
-          </section>
+            </section>
+            <section data-step="7" data-title="Areas of interest">
+              <step-header eyebrow="Section 7" title="What would you like to explore?"></step-header>
+              <label class="label mb-3">Areas of Tamil Nadu tourism you are interested in exploring <b class="text-orange-600">*</b></label>
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <label class="choice check">
+                  <input type="checkbox" name="tourism_interests" value="Culture & Heritage"><span>Culture & Heritage</span></label><label class="choice check"><input type="checkbox"
+       name="tourism_interests"
+       value="Temples & Spiritual Tourism"><span>Temples & Spiritual Tourism</span></label><label class="choice check"><input type="checkbox"
+       name="tourism_interests"
+       value="Pongal & Traditional Festivals"><span>Pongal & Traditional Festivals</span></label><label class="choice check"><input type="checkbox"
+       name="tourism_interests"
+       value="Cuisine & Culinary Tourism"><span>Cuisine & Culinary Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Nature & Wildlife"><span>Nature & Wildlife</span></label><label class="choice check"><input type="checkbox"
+       name="tourism_interests"
+       value="Beaches & Coastal Tourism"><span>Beaches & Coastal Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Wellness & Ayurveda"><span>Wellness & Ayurveda</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Adventure Tourism"><span>Adventure Tourism</span></label><label class="choice check"><input type="checkbox"
+       name="tourism_interests"
+       value="Rural & Community Tourism"><span>Rural & Community Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Luxury Tourism"><span>Luxury Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Family Tourism"><span>Family Tourism</span></label><label class="choice check"><input type="checkbox"
+       name="tourism_interests"
+       value="MICE / Business Tourism"><span>MICE / Business Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Wedding Tourism"><span>Wedding Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Film Tourism"><span>Film Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Sustainable Tourism"><span>Sustainable Tourism</span></label><label class="choice check"><input type="checkbox" name="tourism_interests" value="Other"><span>Other</span>
+                  </label>
+                </div>
+                <div class="mt-5">
+                  <label class="label">Other area of interest</label>
+                  <input class="field" name="other_tourism_interest">
+                </div>
+                <div class="mt-7 grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label class="label">What would you most like to experience or discover in Tamil Nadu?</label>
+                    <textarea class="field min-h-32" name="desired_experience"></textarea>
+                  </div>
+                  <div>
+                    <label class="label">Which Tamil Nadu destinations are you already familiar with?</label>
+                    <textarea class="field min-h-32" name="familiar_destinations"></textarea>
+                  </div>
+                </div>
+              </section>
+              <section data-step="8" data-title="Post-FAM promotion">
+                <step-header eyebrow="Section 8" title="Post-FAM promotion commitment"></step-header>
+                <label class="label mb-3">How will you help showcase Tamil Nadu in your region / market? <b class="text-orange-600">*</b></label>
+                <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <label class="choice check">
+                    <input type="checkbox"
+                           name="promotion_channels"
+                           value="Social Media Posts / Reels"><span>Social Media Posts / Reels</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="YouTube / Video Content"><span>YouTube / Video Content</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Television / Broadcast Features"><span>Television / Broadcast Features</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Newspaper / Magazine Articles"><span>Newspaper / Magazine Articles</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Online Travel Media / Publications"><span>Online Travel Media / Publications</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Destination Features / Travel Stories"><span>Destination Features / Travel Stories</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Podcasts / Interviews"><span>Podcasts / Interviews</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Travel Trade Presentations"><span>Travel Trade Presentations</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="B2B Meetings"><span>B2B Meetings with Travel Agents / Tour Operators</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Develop / Promote Tamil Nadu Travel Packages"><span>Develop / Promote Tamil Nadu Travel Packages</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Include Tamil Nadu in Future Tours"><span>Include Tamil Nadu in Future Tours</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Tourism Exhibitions / Trade Events"><span>Tourism Exhibitions / Trade Events</span></label><label class="choice check"><input type="checkbox"
+       name="promotion_channels"
+       value="Community / Speaking Events"><span>Community / Speaking Events</span></label><label class="choice check"><input type="checkbox" name="promotion_channels" value="Other"><span>Other</span>
+                    </label>
+                  </div>
+                  <div class="mt-5">
+                    <label class="label">Other promotion channel</label>
+                    <input class="field" name="other_promotion_channel">
+                  </div>
+                  <div class="mt-7">
+                    <label class="label">Proposed Post-FAM Promotion Plan <b class="text-orange-600">*</b></label>
+                    <textarea class="field min-h-40"
+                              name="promotion_plan"
+                              required
+                              placeholder="How will you showcase Tamil Nadu to your audience, clients, travel trade network or region?"></textarea>
+                  </div>
+                  <div class="mt-7">
+                    <label class="label mb-3">What type of content do you expect to produce?</label>
+                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <label class="choice check">
+                        <input type="checkbox" name="expected_content_types" value="Articles">
+                        <span>Articles</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox" name="expected_content_types" value="Videos">
+                        <span>Videos</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox"
+                               name="expected_content_types"
+                               value="Reels / Short Videos">
+                        <span>Reels / Short Videos</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox"
+                               name="expected_content_types"
+                               value="Social Media Posts">
+                        <span>Social Media Posts</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox"
+                               name="expected_content_types"
+                               value="Television / Broadcast">
+                        <span>Television / Broadcast</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox" name="expected_content_types" value="Podcast">
+                        <span>Podcast</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox" name="expected_content_types" value="Photography">
+                        <span>Photography</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox" name="expected_content_types" value="Travel Packages">
+                        <span>Travel Packages</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox"
+                               name="expected_content_types"
+                               value="B2B Presentations">
+                        <span>B2B Presentations</span>
+                      </label>
+                      <label class="choice check">
+                        <input type="checkbox" name="expected_content_types" value="Other">
+                        <span>Other</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="mt-7 grid gap-5 md:grid-cols-2">
+                    <div>
+                      <label class="label">How many content / promotional outputs do you expect to create?</label>
+                      <select class="field" name="output_count">
+                        <option value="">Select</option>
+                        <option>1-3</option>
+                        <option>4-6</option>
+                        <option>7-10</option>
+                        <option>More than 10</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="label">Expected timeline for post-FAM coverage</label>
+                      <select class="field" name="coverage_timeline">
+                        <option value="">Select</option>
+                        <option>Within 2 weeks</option>
+                        <option>Within 1 month</option>
+                        <option>Within 3 months</option>
+                        <option>Ongoing / Long-term</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mt-5">
+                    <label class="label">What specific value can you bring to Tamil Nadu Tourism in your market?</label>
+                    <textarea class="field min-h-32" name="market_value"></textarea>
+                  </div>
+                </section>
+                <section data-step="9" data-title="Travel trade potential">
+                  <step-header eyebrow="Section 9" title="Travel trade potential"></step-header>
+                  <div class="mb-6 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">For Travel Agents, Tour Operators, DMCs and relevant tourism professionals.</div>
+                  <div class="space-y-7">
+                    <question-radio title="Do you currently sell or promote India as a destination?" name="sells_india"></question-radio><question-radio title="Do you currently offer Tamil Nadu in your travel programmes / packages?" name="offers_tamil_nadu"></question-radio>
+                    <div>
+                      <label class="label">Would you consider introducing Tamil Nadu into your existing travel programmes after the FAM?</label>
+                      <div class="grid max-w-xl grid-cols-3 gap-3">
+                        <label class="choice">
+                          <input type="radio" name="introduce_tamil_nadu" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="introduce_tamil_nadu" value="Maybe"><span>Maybe</span></label><label class="choice"><input type="radio" name="introduce_tamil_nadu" value="No"><span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div>
+                        <label class="label">Would you be interested in developing a dedicated Tamil Nadu itinerary / package?</label>
+                        <div class="grid max-w-xl grid-cols-3 gap-3">
+                          <label class="choice">
+                            <input type="radio" name="dedicated_tn_package" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="dedicated_tn_package" value="Maybe"><span>Maybe</span></label><label class="choice"><input type="radio" name="dedicated_tn_package" value="No"><span>No</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div>
+                          <label class="label mb-3">Tamil Nadu tourism products with the strongest potential in your market</label>
+                          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            <label class="choice check">
+                              <input type="checkbox" name="strong_products" value="Culture & Heritage"><span>Culture & Heritage</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Spiritual Tourism"><span>Spiritual Tourism</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Luxury Travel"><span>Luxury Travel</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Wellness"><span>Wellness</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Adventure"><span>Adventure</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Wildlife & Nature"><span>Wildlife & Nature</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Beach & Coastal"><span>Beach & Coastal</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Culinary Tourism"><span>Culinary Tourism</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Family Travel"><span>Family Travel</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="MICE"><span>MICE</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Wedding Tourism"><span>Wedding Tourism</span></label><label class="choice check"><input type="checkbox" name="strong_products" value="Other"><span>Other</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="grid gap-5 md:grid-cols-2">
+                            <div>
+                              <label class="label">Approximate number of travellers / clients handled annually</label><input class="field" name="annual_clients">
+                            </div>
+                            <div>
+                              <question-radio title="Interested in future B2B engagement with Tamil Nadu Tourism and tourism stakeholders?" name="future_b2b"></question-radio>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <section data-step="10" data-title="Participant value">
+                        <step-header eyebrow="Section 10" title="Participant value & suitability"></step-header>
+                        <div class="space-y-6">
+                          <div>
+                            <label class="label">Why should you be selected for the Discover Tamil Nadu International FAM Tour? <b class="text-orange-600">*</b></label><textarea class="field min-h-40"
+          name="selection_reason"
+          required
+          placeholder="Focus on your professional credibility, reach, market relevance and expected impact."></textarea>
+                          </div>
+                          <div>
+                            <label class="label">What unique perspective, audience or market access can you bring?</label><textarea class="field min-h-32" name="unique_perspective"></textarea>
+                          </div>
+                          <question-radio title="Are you willing to participate in interviews, photography, video shoots and official promotional activities during the FAM Tour?" name="media_participation"></question-radio>
+                          <div>
+                            <label class="label">Are you willing to participate in reasonable post-FAM promotional activities, subject to mutual coordination?</label>
+                            <div class="grid max-w-2xl gap-3 sm:grid-cols-3">
+                              <label class="choice">
+                                <input type="radio" name="post_fam_participation" value="Yes"><span>Yes</span></label><label class="choice"><input type="radio" name="post_fam_participation" value="No"><span>No</span></label><label class="choice"><input type="radio"
+       name="post_fam_participation"
+       value="Subject to availability"><span>Subject to availability</span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                        <section data-step="11" data-title="Source & availability">
+                          <step-header eyebrow="Section 11" title="Programme source & availability"></step-header>
+                          <div>
+                            <label class="label mb-3">How did you come to know about Discover Tamil Nadu 2026-27? <b class="text-orange-600">*</b></label>
+                            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                              <label class="choice">
+                                <input type="radio"
+                                       name="programme_source"
+                                       value="IFTM Top Resa - Paris"
+                                       required>
+                                <span>IFTM Top Resa - Paris</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio"
+                                       name="programme_source"
+                                       value="Tourism EXPO Japan - Tokyo">
+                                <span>Tourism EXPO Japan - Tokyo</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio" name="programme_source" value="WTM London">
+                                <span>WTM London</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio"
+                                       name="programme_source"
+                                       value="Tamil Nadu Tourism Website">
+                                <span>Tamil Nadu Tourism Website</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio" name="programme_source" value="Social Media">
+                                <span>Social Media</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio"
+                                       name="programme_source"
+                                       value="Email / Direct Invitation">
+                                <span>Email / Direct Invitation</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio"
+                                       name="programme_source"
+                                       value="Travel Trade / Industry Contact">
+                                <span>Travel Trade / Industry Contact</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio"
+                                       name="programme_source"
+                                       value="Colleague / Professional Network">
+                                <span>Colleague / Professional Network</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio" name="programme_source" value="Other">
+                                <span>Other</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="mt-5">
+                            <label class="label">Other source</label>
+                            <input class="field" name="other_programme_source">
+                          </div>
+                          <div class="mt-7">
+                            <label class="label">
+                              If selected, will you be available to travel to Tamil Nadu from 12-20 January 2027? <b class="text-orange-600">*</b>
+                            </label>
+                            <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                              <label class="choice">
+                                <input type="radio"
+                                       name="availability"
+                                       value="Yes, I confirm my availability"
+                                       required>
+                                <span>Yes, I confirm my availability</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio" name="availability" value="I expect to be available">
+                                <span>I expect to be available</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio" name="availability" value="Unable to confirm at present">
+                                <span>Unable to confirm at present</span>
+                              </label>
+                              <label class="choice">
+                                <input type="radio" name="availability" value="No">
+                                <span>No</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="mt-7 grid gap-6 md:grid-cols-2">
+                            <div>
+                              <label class="label">Do you have a valid passport for travel to India?</label>
+                              <select class="field" name="valid_passport">
+                                <option value="">Select</option>
+                                <option>Yes</option>
+                                <option>No</option>
+                                <option>Renewal in progress</option>
+                              </select>
+                            </div>
+                            <div>
+                              <question-radio title="Are you willing to comply with the programme schedule and participation requirements?" name="comply_schedule"></question-radio>
+                            </div>
+                          </div>
+                          <div class="mt-7 grid gap-6 md:grid-cols-2">
+                            <div>
+                              <label class="label">Do you have a valid passport for travel to India?</label>
+                              <select class="field" name="valid_passport">
+                                <option value="">Select</option>
+                                <option>Yes</option>
+                                <option>No</option>
+                                <option>Renewal in progress</option>
+                              </select>
+                            </div>
+                            <div>
+                              <question-radio title="Are you willing to comply with the programme schedule and participation requirements?" name="comply_schedule"></question-radio>
+                            </div>
+                          </div>
+                        </section>
+                        <section data-step="12" data-title="Additional information">
+                          <step-header eyebrow="Section 12" title="Additional information"></step-header>
+                          <div>
+                            <label class="label">Anything else you would like the Selection Committee to consider?</label>
+                            <textarea class="field min-h-40" name="additional_information"></textarea>
+                          </div>
+                          <div class="mt-7 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 p-6 text-center">
+                            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-xl shadow-sm">↑</div>
+                            <label class="mt-3 block font-bold text-ink">Upload Supporting Material, if applicable</label>
+                            <p class="mx-auto mt-1 max-w-xl text-sm leading-6 text-slate-500">Professional profile / media kit, portfolio, previous destination coverage, audience statistics, awards / recognition or relevant supporting material.</p>
+                            <input class="mt-4 max-w-full text-sm"
+                                   type="file"
+                                   name="supporting_material"
+                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                          </div>
+                        </section>
+                        <section data-step="13" data-title="Declaration & consent">
+                          <step-header eyebrow="Section 13" title="Declaration & voluntary consent"></step-header>
+                          <div class="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
+                            <p>I confirm that the information provided in this application is true, accurate and complete to the best of my knowledge.</p>
+                            <p>I understand that this application is an Expression of Interest and submission does not guarantee selection. Applications will be evaluated using the programme’s stated selection criteria.</p>
+                            <p>I voluntarily submit my information for registration, evaluation, selection, communication, programme planning and coordination, and consent to programme-related use by the organisers and authorised representatives.</p>
+                            <p>I understand that participation may involve photography, videography and media documentation, subject to applicable programme terms and permissions.</p>
+                          </div>
+                          <label class="choice check mt-5 block">
+                            <input type="checkbox" name="declaration_accepted" value="on" required>
+                            <span><strong>I have read and agree to the Declaration and Consent.</strong></span>
+                          </label>
+                          <div class="mt-7 grid gap-5 md:grid-cols-3">
+                            <div>
+                              <label class="label">Applicant Name</label><input class="field"
+       name="applicant_name"
+       required>
+                            </div>
+                            <div>
+                              <label class="label">Date</label>
+                              <input class="field" type="date" name="declaration_date" required>
+                            </div>
+                            <div>
+                              <label class="label">Digital Confirmation / Signature</label>
+                              <input class="field"
+                                     name="digital_signature"
+                                     required
+                                     placeholder="Type your full name">
+                            </div>
+                          </div>
+                          <div class="mt-7 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+                            <h3 class="font-bold text-blue-950">Privacy & Data Collection Notice</h3>
+                            <p class="mt-2 text-sm leading-6 text-blue-900/80">Information is collected for applicant evaluation, selection, communication, programme planning, travel coordination, reporting and related tourism promotion activities. It may be accessed by the Department of Tourism, Government of Tamil Nadu, programme organisers and authorised service providers only as necessary for programme-related purposes. Do not provide passwords, financial information or sensitive personal information not requested by this form.</p>
+                          </div>
+                        </section>
+                      </div>
+                      <div class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-5 sm:px-7 lg:px-9">
+                        <button type="button"
+                                id="backBtn"
+                                class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40">← Back</button>
+                        <div class="hidden text-xs text-slate-400 sm:block">Fields marked <b class="text-orange-600">*</b> are required</div>
+                        <button type="button"
+                                id="nextBtn"
+                                class="rounded-xl bg-orange-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-600/20 hover:bg-orange-700">Continue →</button>
+                        <button type="submit"
+                                id="submitBtn"
+                                class="hidden rounded-xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700">Submit application</button>
+                      </div>
+                    </form>
+                  </section>
+                </main>
+                <template id="languageTemplate">
+                  <div class="grid gap-3 sm:grid-cols-[1fr_190px_auto]">
+                    <input class="field" name="language_name" placeholder="Language">
+                    <select class="field" name="language_level">
+                      <option value="">Proficiency</option>
+                      <option>Basic</option>
+                      <option>Working</option>
+                      <option>Fluent</option>
+                    </select>
+                    <button type="button"
+                            class="remove-language rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-500 hover:bg-slate-50">Remove</button>
+                  </div>
+                </template>
+                <script>
+                    // Lightweight custom elements keep the HTML readable while rendering standard form content.
+                    customElements.define(
+                        "step-header",
+                        class extends HTMLElement {
+                            connectedCallback() {
+                                this.innerHTML = `<p class="text-xs font-bold uppercase tracking-[.18em] text-orange-600">${this.getAttribute("eyebrow")}</p><h2 class="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">${this.getAttribute("title")}</h2><div class="mb-7 mt-4 h-px bg-slate-100"></div>`;
+                            }
+                        },
+                    );
+                    customElements.define(
+                        "question-radio",
+                        class extends HTMLElement {
+                            connectedCallback() {
+                                const n = this.getAttribute("name"),
+                                    r = this.hasAttribute("required") ? "required" : "";
+                                this.innerHTML = `<div><label class="label">${this.getAttribute("title")} ${r ? '<b class="text-orange-600">*</b>' : ""}</label><div class="mt-3 grid max-w-md grid-cols-2 gap-3"><label class="choice"><input type="radio" name="${n}" value="Yes" ${r}><span>Yes</span></label><label class="choice"><input type="radio" name="${n}" value="No"><span>No</span></label></div></div>`;
+                            }
+                        },
+                    );
 
-          <section data-step="12" data-title="Additional information">
-            <step-header eyebrow="Section 12" title="Additional information"></step-header>
-            <div>
-              <label class="label">Anything else you would like the Selection Committee to consider?</label>
-              <textarea class="field min-h-40" name="additional_information"></textarea>
-            </div>
-            <div class="mt-7 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-              <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-xl shadow-sm">↑</div>
-              <label class="mt-3 block font-bold text-ink">Upload Supporting Material, if applicable</label>
-              <p class="mx-auto mt-1 max-w-xl text-sm leading-6 text-slate-500">Professional profile / media kit, portfolio, previous destination coverage, audience statistics, awards / recognition or relevant supporting material.</p>
-              <input class="mt-4 max-w-full text-sm" type="file" name="supporting_material" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-            </div>
-          </section>
+                    const steps = [...document.querySelectorAll("[data-step]")],
+                        total = steps.length;
+                    let current = Math.max(
+                        1,
+                        Math.min(total, Number(localStorage.getItem("tnFamStep") || 1)),
+                    );
+                    const nav = document.getElementById("stepNav");
+                    nav.innerHTML = steps
+                        .map(
+                            (s, i) =>
+                            `<button type="button" data-go="${i + 1}" class="group flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left text-xs font-semibold text-slate-500 hover:bg-slate-50"><span class="step-dot flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[10px]">${i + 1}</span><span>${s.dataset.title}</span></button>`,
+                        )
+                        .join("");
 
-          <section data-step="13" data-title="Declaration & consent">
-            <step-header eyebrow="Section 13" title="Declaration & voluntary consent"></step-header>
-            <div class="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
-              <p>I confirm that the information provided in this application is true, accurate and complete to the best of my knowledge.</p><p>I understand that this application is an Expression of Interest and submission does not guarantee selection. Applications will be evaluated using the programme’s stated selection criteria.</p><p>I voluntarily submit my information for registration, evaluation, selection, communication, programme planning and coordination, and consent to programme-related use by the organisers and authorised representatives.</p><p>I understand that participation may involve photography, videography and media documentation, subject to applicable programme terms and permissions.</p></div>
-            <label class="choice check mt-5 block"><input type="checkbox" name="declaration_accepted" value="on" required>
-              <span><strong>I have read and agree to the Declaration and Consent.</strong></span>
-            </label>
-            <div class="mt-7 grid gap-5 md:grid-cols-3"><div>
-              <label class="label">Applicant Name</label><input class="field" name="applicant_name" required></div>
-              <div>
-                <label class="label">Date</label>
-                <input class="field" type="date" name="declaration_date" required>
-              </div>
-              <div>
-                <label class="label">Digital Confirmation / Signature</label>
-                <input class="field" name="digital_signature" required placeholder="Type your full name">
-              </div>
-            </div>
-            <div class="mt-7 rounded-2xl border border-blue-100 bg-blue-50 p-5">
-              <h3 class="font-bold text-blue-950">Privacy & Data Collection Notice</h3>
-              <p class="mt-2 text-sm leading-6 text-blue-900/80">Information is collected for applicant evaluation, selection, communication, programme planning, travel coordination, reporting and related tourism promotion activities. It may be accessed by the Department of Tourism, Government of Tamil Nadu, programme organisers and authorised service providers only as necessary for programme-related purposes. Do not provide passwords, financial information or sensitive personal information not requested by this form.</p></div>
-          </section>
-        </div>
+                    function isFieldValid(el) {
+                        const tag = el.tagName.toLowerCase();
 
-        <div class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/70 px-5 py-5 sm:px-7 lg:px-9">
-          <button type="button" id="backBtn" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40">← Back</button>
-          <div class="hidden text-xs text-slate-400 sm:block">Fields marked <b class="text-orange-600">*</b> are required</div>
-          <button type="button" id="nextBtn" class="rounded-xl bg-orange-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-600/20 hover:bg-orange-700">Continue →</button>
-          <button type="submit" id="submitBtn" class="hidden rounded-xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700">Submit application</button>
-        </div>
-      </form>
-    </section>
-  </main>
+                        // <question-radio>
+                        if (tag === 'question-radio') {
+                            return !!el.querySelector('input[type="radio"]:checked');
+                        }
 
-  <template id="languageTemplate">
-    <div class="grid gap-3 sm:grid-cols-[1fr_190px_auto]">
-      <input class="field" name="language_name" placeholder="Language">
-      <select class="field" name="language_level">
-        <option value="">Proficiency</option>
-        <option>Basic</option>
-        <option>Working</option>
-        <option>Fluent</option>
-      </select>
-      <button type="button" class="remove-language rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-500 hover:bg-slate-50">Remove</button>
-    </div>
-  </template>
+                        // <question-checkbox>
+                        if (tag === 'question-checkbox') {
+                            return !!el.querySelector('input[type="checkbox"]:checked');
+                        }
 
-  <script>
-        // Lightweight custom elements keep the HTML readable while rendering standard form content.
-    customElements.define(
-      "step-header",
-      class extends HTMLElement {
-        connectedCallback() {
-          this.innerHTML = `<p class="text-xs font-bold uppercase tracking-[.18em] text-orange-600">${this.getAttribute("eyebrow")}</p><h2 class="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">${this.getAttribute("title")}</h2><div class="mb-7 mt-4 h-px bg-slate-100"></div>`;
-        }
-      },
-    );
-    customElements.define(
-      "question-radio",
-      class extends HTMLElement {
-        connectedCallback() {
-          const n = this.getAttribute("name"),
-            r = this.hasAttribute("required") ? "required" : "";
-          this.innerHTML = `<div><label class="label">${this.getAttribute("title")} ${r ? '<b class="text-orange-600">*</b>' : ""}</label><div class="mt-3 grid max-w-md grid-cols-2 gap-3"><label class="choice"><input type="radio" name="${n}" value="Yes" ${r}><span>Yes</span></label><label class="choice"><input type="radio" name="${n}" value="No"><span>No</span></label></div></div>`;
-        }
-      },
-    );
+                        // Native checkbox
+                        if (el.type === 'checkbox') {
+                            return el.checked;
+                        }
 
-    const steps = [...document.querySelectorAll("[data-step]")],
-      total = steps.length;
-    let current = Math.max(
-      1,
-      Math.min(total, Number(localStorage.getItem("tnFamStep") || 1)),
-    );
-    const nav = document.getElementById("stepNav");
-    nav.innerHTML = steps
-      .map(
-        (s, i) =>
-          `<button type="button" data-go="${i + 1}" class="group flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left text-xs font-semibold text-slate-500 hover:bg-slate-50"><span class="step-dot flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[10px]">${i + 1}</span><span>${s.dataset.title}</span></button>`,
-      )
-      .join("");
+                        // Native radio
+                        if (el.type === 'radio') {
+                            return el.checked;
+                        }
 
-    function isFieldValid(el) {
-        const tag = el.tagName.toLowerCase();
+                        // Normal input, textarea, select
+                        return String(el.value ?? '').trim() !== '';
+                    }
 
-        // <question-radio>
-        if (tag === 'question-radio') {
-            return !!el.querySelector('input[type="radio"]:checked');
-        }
+                    function showStep(n) {
+                        current = n;
+                        steps.forEach((s) =>
+                            s.classList.toggle("active", Number(s.dataset.step) === n),
+                        );
+                        document.querySelectorAll("[data-go]").forEach((b) => {
+                            const x = Number(b.dataset.go),
+                                dot = b.querySelector(".step-dot");
+                            dot.classList.toggle("current", x === n);
+                            dot.classList.toggle("done", x < n);
+                            b.classList.toggle("text-orange-700", x === n);
+                        });
+                        const pct = Math.round((n / total) * 100);
+                        document.getElementById("desktopProgress").style.setProperty("--progress-width", pct + "%");
+                        document.getElementById("desktopPercent").textContent = pct + "%";
+                        document.getElementById("mobileProgress").style.setProperty("--progress-width", pct + "%");
+                        document.getElementById("mobileProgressText").textContent =
+                            `${n} of ${total}`;
+                        document.getElementById("mobileStepTitle").textContent =
+                            steps[n - 1].dataset.title;
+                        document.getElementById("backBtn").disabled = n === 1;
+                        document.getElementById("nextBtn").classList.toggle("hidden", n === total);
+                        document.getElementById("submitBtn").classList.toggle("hidden", n !== total);
+                        localStorage.setItem("tnFamStep", n);
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });
+                        refreshConditionals();
+                    }
+                    document.addEventListener("click", (e) => {
+                        const b = e.target.closest("[data-go]");
+                        if (b) showStep(Number(b.dataset.go));
+                    });
+                    document.getElementById("backBtn").onclick = () =>
+                        showStep(Math.max(1, current - 1));
+                    document.getElementById("nextBtn").onclick = () => {
+                        const active = steps[current - 1];
+                        const required = [...active.querySelectorAll("[required]")];
+                        for (const el of required) {
+                            if (el.type === "radio") {
+                                const ok = active.querySelector(`[name="${el.name}"]:checked`);
+                                if (!ok) {
+                                    el.closest("div").scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "center",
+                                    });
+                                    return;
+                                }
+                            } else if (!isFieldValid(el, active)) {
+                                el.focus();
+                                el.reportValidity();
+                                return;
+                            }
+                        }
+                        showStep(Math.min(total, current + 1));
+                    };
 
-        // <question-checkbox>
-        if (tag === 'question-checkbox') {
-            return !!el.querySelector('input[type="checkbox"]:checked');
-        }
+                    function refreshConditionals() {
+                        document.querySelectorAll("[data-show-when]").forEach((el) => {
+                            const [name, value] = el.dataset.showWhen.split(":");
+                            const checked = document.querySelector(`[name="${name}"]:checked`);
+                            el.classList.toggle("hidden", !(checked && checked.value === value));
+                        });
+                    }
+                    document
+                        .getElementById("famForm")
+                        .addEventListener("change", refreshConditionals);
 
-        // Native checkbox
-        if (el.type === 'checkbox') {
-            return el.checked;
-        }
+                    document.querySelectorAll("[data-max-words]").forEach((el) => {
+                        const update = () => {
+                            const c = el.value.trim() ? el.value.trim().split(/\s+/).length : 0;
+                            document.querySelector(`[data-word-count="${el.name}"]`).textContent = c;
+                            if (c > Number(el.dataset.maxWords))
+                                el.setCustomValidity("Please keep this answer within 200 words.");
+                            else el.setCustomValidity("");
+                        };
+                        el.addEventListener("input", update);
+                        update();
+                    });
 
-        // Native radio
-        if (el.type === 'radio') {
-            return el.checked;
-        }
+                    const languageRows = document.getElementById("languageRows"),
+                        tpl = document.getElementById("languageTemplate");
 
-        // Normal input, textarea, select
-        return String(el.value ?? '').trim() !== '';
-    }
+                    function addLanguage() {
+                        languageRows.appendChild(tpl.content.cloneNode(true));
+                    }
+                    addLanguage();
+                    addLanguage();
+                    document.getElementById("addLanguage").onclick = addLanguage;
+                    languageRows.addEventListener("click", (e) => {
+                        if (
+                            e.target.classList.contains("remove-language") &&
+                            languageRows.children.length > 1
+                        )
+                            e.target.parentElement.remove();
+                    });
 
-    function showStep(n) {
-      current = n;
-      steps.forEach((s) =>
-        s.classList.toggle("active", Number(s.dataset.step) === n),
-      );
-      document.querySelectorAll("[data-go]").forEach((b) => {
-        const x = Number(b.dataset.go),
-          dot = b.querySelector(".step-dot");
-        dot.classList.toggle("current", x === n);
-        dot.classList.toggle("done", x < n);
-        b.classList.toggle("text-orange-700", x === n);
-      });
-      const pct = Math.round((n / total) * 100);
-      document.getElementById("desktopProgress").style.setProperty("--progress-width", pct + "%");
-      document.getElementById("desktopPercent").textContent = pct + "%";
-      document.getElementById("mobileProgress").style.setProperty("--progress-width", pct + "%");
-      document.getElementById("mobileProgressText").textContent =
-        `${n} of ${total}`;
-      document.getElementById("mobileStepTitle").textContent =
-        steps[n - 1].dataset.title;
-      document.getElementById("backBtn").disabled = n === 1;
-      document.getElementById("nextBtn").classList.toggle("hidden", n === total);
-      document.getElementById("submitBtn").classList.toggle("hidden", n !== total);
-      localStorage.setItem("tnFamStep", n);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      refreshConditionals();
-    }
-    document.addEventListener("click", (e) => {
-      const b = e.target.closest("[data-go]");
-      if (b) showStep(Number(b.dataset.go));
-    });
-    document.getElementById("backBtn").onclick = () =>
-      showStep(Math.max(1, current - 1));
-    document.getElementById("nextBtn").onclick = () => {
-      const active = steps[current - 1];
-      const required = [...active.querySelectorAll("[required]")];
-      for (const el of required) {
-        if (el.type === "radio") {
-          const ok = active.querySelector(`[name="${el.name}"]:checked`);
-          if (!ok) {
-            el.closest("div").scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-            return;
-          }
-        } else if (!isFieldValid(el, active)) {
-          el.focus();
-          el.reportValidity();
-          return;
-        }
-      }
-      showStep(Math.min(total, current + 1));
-    };
+                    // Local browser draft. File inputs and CSRF token are intentionally excluded.
+                    const form = document.getElementById("famForm"),
+                        draftKey = "discoverTamilNaduFamDraftV1";
 
-    function refreshConditionals() {
-      document.querySelectorAll("[data-show-when]").forEach((el) => {
-        const [name, value] = el.dataset.showWhen.split(":");
-        const checked = document.querySelector(`[name="${name}"]:checked`);
-        el.classList.toggle("hidden", !(checked && checked.value === value));
-      });
-    }
-    document
-      .getElementById("famForm")
-      .addEventListener("change", refreshConditionals);
+                    function saveDraft() {
+                        const data = {};
+                        for (const el of form.elements) {
+                            if (!el.name || el.name === "csrfmiddlewaretoken" || el.type === "file")
+                                continue;
+                            if (el.type === "checkbox" || el.type === "radio") {
+                                if (el.checked)(data[el.name] ??= []).push(el.value);
+                            } else if (
+                                el.name === "content_links" ||
+                                el.name === "language_name" ||
+                                el.name === "language_level"
+                            ) {
+                                (data[el.name] ??= []).push(el.value);
+                            } else data[el.name] = el.value;
+                        }
+                        localStorage.setItem(draftKey, JSON.stringify(data));
+                    }
 
-    document.querySelectorAll("[data-max-words]").forEach((el) => {
-      const update = () => {
-        const c = el.value.trim() ? el.value.trim().split(/\s+/).length : 0;
-        document.querySelector(`[data-word-count="${el.name}"]`).textContent = c;
-        if (c > Number(el.dataset.maxWords))
-          el.setCustomValidity("Please keep this answer within 200 words.");
-        else el.setCustomValidity("");
-      };
-      el.addEventListener("input", update);
-      update();
-    });
+                    function loadDraft() {
+                        let data;
+                        try {
+                            data = JSON.parse(localStorage.getItem(draftKey) || "{}");
+                        } catch {
+                            return;
+                        }
+                        if (Array.isArray(data.language_name)) {
+                            while (languageRows.children.length < data.language_name.length)
+                                addLanguage();
+                        }
+                        for (const [name, val] of Object.entries(data)) {
+                            const els = [...form.querySelectorAll(`[name="${CSS.escape(name)}"]`)];
+                            if (!els.length) continue;
+                            if (els[0].type === "radio" || els[0].type === "checkbox") {
+                                els.forEach(
+                                    (el) => (el.checked = Array.isArray(val) && val.includes(el.value)),
+                                );
+                            } else if (Array.isArray(val)) {
+                                els.forEach((el, i) => {
+                                    if (val[i] !== undefined) el.value = val[i];
+                                });
+                            } else els[0].value = val;
+                        }
+                        refreshConditionals();
+                    }
+                    form.addEventListener("input", () => {
+                        clearTimeout(window.__draftTimer);
+                        window.__draftTimer = setTimeout(saveDraft, 300);
+                    });
+                    // Sync all custom-radio values before submission
+                    function syncCustomRadioValues() {
+                        const questRadios = form.querySelectorAll("question-radio");
+                        questRadios.forEach((qr) => {
+                            const name = qr.getAttribute("name");
+                            const checked = qr.querySelector(`input[type="radio"]:checked`);
+                            if (checked) {
+                                // Ensure the radio button is properly checked
+                                const hiddenInput = form.querySelector(
+                                    `input[type="hidden"][data-sync="${name}"]`,
+                                );
+                                if (hiddenInput) {
+                                    hiddenInput.value = checked.value;
+                                }
+                            }
+                        });
+                    }
 
-    const languageRows = document.getElementById("languageRows"),
-      tpl = document.getElementById("languageTemplate");
-    function addLanguage() {
-      languageRows.appendChild(tpl.content.cloneNode(true));
-    }
-    addLanguage();
-    addLanguage();
-    document.getElementById("addLanguage").onclick = addLanguage;
-    languageRows.addEventListener("click", (e) => {
-      if (
-        e.target.classList.contains("remove-language") &&
-        languageRows.children.length > 1
-      )
-        e.target.parentElement.remove();
-    });
+                    // Comprehensive validation before submit
+                    function validateCompleteForm() {
+                        const errors = [];
 
-    // Local browser draft. File inputs and CSRF token are intentionally excluded.
-    const form = document.getElementById("famForm"),
-      draftKey = "discoverTamilNaduFamDraftV1";
-    function saveDraft() {
-      const data = {};
-      for (const el of form.elements) {
-        if (!el.name || el.name === "csrfmiddlewaretoken" || el.type === "file")
-          continue;
-        if (el.type === "checkbox" || el.type === "radio") {
-          if (el.checked) (data[el.name] ??= []).push(el.value);
-        } else if (
-          el.name === "content_links" ||
-          el.name === "language_name" ||
-          el.name === "language_level"
-        ) {
-          (data[el.name] ??= []).push(el.value);
-        } else data[el.name] = el.value;
-      }
-      localStorage.setItem(draftKey, JSON.stringify(data));
-    }
-    function loadDraft() {
-      let data;
-      try {
-        data = JSON.parse(localStorage.getItem(draftKey) || "{}");
-      } catch {
-        return;
-      }
-      if (Array.isArray(data.language_name)) {
-        while (languageRows.children.length < data.language_name.length)
-          addLanguage();
-      }
-      for (const [name, val] of Object.entries(data)) {
-        const els = [...form.querySelectorAll(`[name="${CSS.escape(name)}"]`)];
-        if (!els.length) continue;
-        if (els[0].type === "radio" || els[0].type === "checkbox") {
-          els.forEach(
-            (el) => (el.checked = Array.isArray(val) && val.includes(el.value)),
-          );
-        } else if (Array.isArray(val)) {
-          els.forEach((el, i) => {
-            if (val[i] !== undefined) el.value = val[i];
-          });
-        } else els[0].value = val;
-      }
-      refreshConditionals();
-    }
-    form.addEventListener("input", () => {
-      clearTimeout(window.__draftTimer);
-      window.__draftTimer = setTimeout(saveDraft, 300);
-    });
-    // Sync all custom-radio values before submission
-    function syncCustomRadioValues() {
-      const questRadios = form.querySelectorAll("question-radio");
-      questRadios.forEach((qr) => {
-        const name = qr.getAttribute("name");
-        const checked = qr.querySelector(`input[type="radio"]:checked`);
-        if (checked) {
-          // Ensure the radio button is properly checked
-          const hiddenInput = form.querySelector(
-            `input[type="hidden"][data-sync="${name}"]`,
-          );
-          if (hiddenInput) {
-            hiddenInput.value = checked.value;
-          }
-        }
-      });
-    }
+                        // Check all required fields
+                        const required = form.querySelectorAll("[required]");
+                        required.forEach((el) => {
+                            const tag = el.tagName.toLowerCase();
 
-    // Comprehensive validation before submit
-    function validateCompleteForm() {
-      const errors = [];
+                            if (tag === "question-radio") {
+                                const checked = el.querySelector('input[type="radio"]:checked');
+                                if (!checked) {
+                                    errors.push(`${el.getAttribute("title")} is required`);
+                                }
+                            } else if (tag === "question-checkbox") {
+                                const checked = el.querySelector('input[type="checkbox"]:checked');
+                                if (!checked) {
+                                    errors.push(`${el.getAttribute("title")} is required`);
+                                }
+                            } else if (el.type === "radio") {
+                                const checked = form.querySelector(
+                                    `input[type="radio"][name="${el.name}"]:checked`,
+                                );
+                                if (!checked) {
+                                    const label = form.querySelector(`label[for="${el.id}"]`);
+                                    errors.push(
+                                        `${label ? label.textContent : el.name} is required`,
+                                    );
+                                }
+                            } else if (el.type === "checkbox") {
+                                if (!el.checked) {
+                                    const label = form.querySelector(`label[for="${el.id}"]`);
+                                    errors.push(
+                                        `${label ? label.textContent : el.name} is required`,
+                                    );
+                                }
+                            } else if (
+                                el.type === "text" ||
+                                el.type === "email" ||
+                                el.type === "url" ||
+                                el.type === "number" ||
+                                el.type === "date" ||
+                                el.tagName.toLowerCase() === "textarea"
+                            ) {
+                                if (!el.value || el.value.trim() === "") {
+                                    const label = form.querySelector(`label[for="${el.id}"]`);
+                                    const fieldName = label ?
+                                        label.textContent :
+                                        el.name || "This field";
+                                    errors.push(`${fieldName} is required`);
+                                }
+                            } else if (el.tagName.toLowerCase() === "select") {
+                                if (!el.value) {
+                                    const label = form.querySelector(`label[for="${el.id}"]`);
+                                    errors.push(
+                                        `${label ? label.textContent : el.name} is required`,
+                                    );
+                                }
+                            }
+                        });
 
-      // Check all required fields
-      const required = form.querySelectorAll("[required]");
-      required.forEach((el) => {
-        const tag = el.tagName.toLowerCase();
+                        // Check word count limits
+                        form.querySelectorAll("[data-max-words]").forEach((el) => {
+                            const wordCount = el.value.trim() ?
+                                el.value.trim().split(/\s+/).length :
+                                0;
+                            const maxWords = Number(el.dataset.maxWords);
+                            if (wordCount > maxWords) {
+                                errors.push(
+                                    `${el.previousElementSibling?.textContent || el.name} exceeds ${maxWords} word limit (${wordCount} words)`,
+                                );
+                            }
+                        });
 
-        if (tag === "question-radio") {
-          const checked = el.querySelector('input[type="radio"]:checked');
-          if (!checked) {
-            errors.push(`${el.getAttribute("title")} is required`);
-          }
-        } else if (tag === "question-checkbox") {
-          const checked = el.querySelector('input[type="checkbox"]:checked');
-          if (!checked) {
-            errors.push(`${el.getAttribute("title")} is required`);
-          }
-        } else if (el.type === "radio") {
-          const checked = form.querySelector(
-            `input[type="radio"][name="${el.name}"]:checked`,
-          );
-          if (!checked) {
-            const label = form.querySelector(`label[for="${el.id}"]`);
-            errors.push(
-              `${label ? label.textContent : el.name} is required`,
-            );
-          }
-        } else if (el.type === "checkbox") {
-          if (!el.checked) {
-            const label = form.querySelector(`label[for="${el.id}"]`);
-            errors.push(
-              `${label ? label.textContent : el.name} is required`,
-            );
-          }
-        } else if (
-          el.type === "text" ||
-          el.type === "email" ||
-          el.type === "url" ||
-          el.type === "number" ||
-          el.type === "date" ||
-          el.tagName.toLowerCase() === "textarea"
-        ) {
-          if (!el.value || el.value.trim() === "") {
-            const label = form.querySelector(`label[for="${el.id}"]`);
-            const fieldName = label
-              ? label.textContent
-              : el.name || "This field";
-            errors.push(`${fieldName} is required`);
-          }
-        } else if (el.tagName.toLowerCase() === "select") {
-          if (!el.value) {
-            const label = form.querySelector(`label[for="${el.id}"]`);
-            errors.push(
-              `${label ? label.textContent : el.name} is required`,
-            );
-          }
-        }
-      });
+                        return errors;
+                    }
 
-      // Check word count limits
-      form.querySelectorAll("[data-max-words]").forEach((el) => {
-        const wordCount = el.value.trim()
-          ? el.value.trim().split(/\s+/).length
-          : 0;
-        const maxWords = Number(el.dataset.maxWords);
-        if (wordCount > maxWords) {
-          errors.push(
-            `${el.previousElementSibling?.textContent || el.name} exceeds ${maxWords} word limit (${wordCount} words)`,
-          );
-        }
-      });
+                    // Inspect FormData before submission
+                    function inspectFormData() {
+                        const formData = new FormData(form);
+                        const dataObj = {};
+                        for (const [key, value] of formData.entries()) {
+                            if (key === "csrfmiddlewaretoken" || key === "supporting_material")
+                                continue;
+                            if (dataObj[key]) {
+                                if (!Array.isArray(dataObj[key])) {
+                                    dataObj[key] = [dataObj[key]];
+                                }
+                                dataObj[key].push(value);
+                            } else {
+                                dataObj[key] = value;
+                            }
+                        }
+                        console.log("📋 Form Data Summary:", dataObj);
+                        return dataObj;
+                    }
 
-      return errors;
-    }
+                    form.addEventListener("submit", (e) => {
+                        // Sync custom-radio values
+                        syncCustomRadioValues();
 
-    // Inspect FormData before submission
-    function inspectFormData() {
-      const formData = new FormData(form);
-      const dataObj = {};
-      for (const [key, value] of formData.entries()) {
-        if (key === "csrfmiddlewaretoken" || key === "supporting_material")
-          continue;
-        if (dataObj[key]) {
-          if (!Array.isArray(dataObj[key])) {
-            dataObj[key] = [dataObj[key]];
-          }
-          dataObj[key].push(value);
-        } else {
-          dataObj[key] = value;
-        }
-      }
-      console.log("📋 Form Data Summary:", dataObj);
-      return dataObj;
-    }
+                        // Validate complete form
+                        const errors = validateCompleteForm();
+                        if (errors.length > 0) {
+                            e.preventDefault();
+                            console.error("❌ Form Validation Errors:", errors);
+                            alert(
+                                "Please fix the following issues:\n\n" +
+                                errors.map((err, i) => `${i + 1}. ${err}`).join("\n"),
+                            );
+                            return;
+                        }
 
-    form.addEventListener("submit", (e) => {
-      // Sync custom-radio values
-      syncCustomRadioValues();
+                        // Inspect FormData
+                        console.log("✅ Form validation passed");
+                        inspectFormData();
 
-      // Validate complete form
-      const errors = validateCompleteForm();
-      if (errors.length > 0) {
-        e.preventDefault();
-        console.error("❌ Form Validation Errors:", errors);
-        alert(
-          "Please fix the following issues:\n\n" +
-            errors.map((err, i) => `${i + 1}. ${err}`).join("\n"),
-        );
-        return;
-      }
+                        // Clear draft on successful validation
+                        localStorage.removeItem(draftKey);
+                    });
 
-      // Inspect FormData
-      console.log("✅ Form validation passed");
-      inspectFormData();
-
-      // Clear draft on successful validation
-      localStorage.removeItem(draftKey);
-    });
-
-    loadDraft();
-    showStep(current);
-
-  </script>
-</body>
-</html>
+                    loadDraft();
+                    showStep(current);
+                </script>
+              </body>
+            </html>
