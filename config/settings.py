@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'applications'
+    'rest_framework',
+
+    'applications',
+
 ]
 
 MIDDLEWARE = [
@@ -90,7 +93,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -144,3 +146,11 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 20242880
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 20242880
 
+
+USER = {
+    'DOMAIN': 'www.register.discovertamilnadu.online',
+    'SITE_NAME': 'Discover Tamilnadu',
+    'PASSWORD_RESET_CONFIRM_URL': 'reset-password?uid={uid}&token={token}',
+    'ACTIVATION_URL': 'activate-account?uid={uid}&token={token}',
+    'SEND_ACTIVATION_EMAIL': True,
+}

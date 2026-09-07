@@ -129,7 +129,7 @@
                             {% for a in applications %}
                                 <tr class="border-t hover:bg-slate-50">
                                     <td class="p-4">
-                                        <b>{{ a.full_name }}</b>
+                                        <b>{{ a.first_name }} {{ a.last_name }}</b>
                                         <div class="text-xs text-slate-500">{{ a.organisation|default:'—' }}</div>
                                     </td>
                                     <td class="p-4">{{ a.country_of_residence }}</td>

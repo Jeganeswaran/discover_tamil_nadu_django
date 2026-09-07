@@ -1,10 +1,15 @@
 import csv
+import secrets
+import time
 import json
 
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.db.models import Q
-from django.http import HttpResponse
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -13,6 +18,7 @@ from django.views.generic import FormView, TemplateView
 from .forms import FamApplicationForm
 from .models import FamApplication, SiteBrand, STATUS
 from .forms import SiteBrandForm
+from .utils import send_email
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.lib import colors
@@ -28,6 +34,76 @@ ARRAY_FIELDS = {'tourism_interests', 'promotion_channels', 'expected_content_typ
 SCORE_FIELDS = ['professional_credibility_score', 'market_relevance_score', 'audience_reach_score',
                 'tourism_influence_score', 'language_reach_score', 'content_potential_score', 'travel_trade_score',
                 'promotion_potential_score']
+
+OTP_EXPIRY_SECONDS = 10 * 60
+OTP_RESEND_DELAY_SECONDS = 60
+OTP_MAX_ATTEMPTS = 5
+
+
+def _email_error(request):
+    email = request.POST.get('email', '').strip().lower()
+    try:
+        validate_email(email)
+    except ValidationError:
+        return email, 'Enter a valid email address.'
+    if FamApplication.objects.filter(email__iexact=email).exists():
+        return email, 'An application with this email address already exists.'
+    return email, None
+
+
+class SendEmailOtpView(View):
+    """Send a time-limited email verification code for a new applicant."""
+
+    def post(self, request, *args, **kwargs):
+        email, error = _email_error(request)
+        if error:
+            return JsonResponse({'error': error}, status=400)
+
+        last_sent = request.session.get('email_otp_sent_at', 0)
+        if time.time() - last_sent < OTP_RESEND_DELAY_SECONDS:
+            return JsonResponse({'error': 'Please wait before requesting another code.'}, status=429)
+
+        code = f'{secrets.randbelow(1000000):06d}'
+        request.session['email_otp_email'] = email
+        request.session['email_otp_hash'] = make_password(code)
+        request.session['email_otp_expires_at'] = time.time() + OTP_EXPIRY_SECONDS
+        request.session['email_otp_sent_at'] = time.time()
+        request.session['email_otp_attempts'] = 0
+        request.session.pop('email_verified', None)
+        request.session.modified = True
+
+        send_email(
+            email,
+            {'otp': code},
+            'applications/email/email_verification_subject.txt',
+            plain_body_template_name='applications/email/email_verification.txt',
+        )
+        return JsonResponse({'message': 'Verification code sent. Check your email.'})
+
+
+class VerifyEmailOtpView(View):
+    """Verify the submitted email code and mark that email as verified in session."""
+
+    def post(self, request, *args, **kwargs):
+        email, error = _email_error(request)
+        if error:
+            return JsonResponse({'error': error}, status=400)
+
+        if request.session.get('email_otp_email') != email:
+            return JsonResponse({'error': 'Request a verification code for this email first.'}, status=400)
+        if time.time() > request.session.get('email_otp_expires_at', 0):
+            return JsonResponse({'error': 'This verification code has expired. Request a new code.'}, status=400)
+        if request.session.get('email_otp_attempts', 0) >= OTP_MAX_ATTEMPTS:
+            return JsonResponse({'error': 'Too many incorrect attempts. Request a new code.'}, status=400)
+
+        request.session['email_otp_attempts'] = request.session.get('email_otp_attempts', 0) + 1
+        if not check_password(request.POST.get('otp', '').strip(), request.session.get('email_otp_hash', '')):
+            request.session.modified = True
+            return JsonResponse({'error': 'The verification code is incorrect.'}, status=400)
+
+        request.session['email_verified'] = email
+        request.session.modified = True
+        return JsonResponse({'message': 'Email verified successfully.'})
 
 
 class ApplicationFormView(FormView):
@@ -48,13 +124,17 @@ class ApplicationFormView(FormView):
 
     def form_invalid(self, form):
         """Redisplay the submitted form with validation errors and branding."""
-        import pdb; pdb.set_trace()
         context = self.get_context_data(form=form)
         context['submission_failed'] = True
         return self.render_to_response(context)
 
     def form_valid(self, form):
         """Validate repeated fields and save the submitted application."""
+        email = form.cleaned_data['email'].strip().lower()
+        if self.request.session.get('email_verified') != email:
+            form.add_error('email', 'Please verify this email address before submitting.')
+            return self.form_invalid(form)
+
         missing = []
         if not any(value.strip() for value in self.request.POST.getlist('language_name')):
             missing.append('at least one professional language')
@@ -83,6 +163,20 @@ class ApplicationFormView(FormView):
         for field in ARRAY_FIELDS:
             setattr(application, field, self.request.POST.getlist(field))
         application.save()
+        application.reference_number = f'DTN{timezone.now().year % 100:02d}-{application.pk:03d}'
+        application.save(update_fields=['reference_number'])
+        self.request.session['last_submission_reference'] = application.reference_number
+        self.request.session['last_submission_name'] = application.applicant_name
+        self.request.session.modified = True
+        send_email(
+            application.email,
+            {
+                'applicant_name': application.applicant_name,
+                'reference_number': application.reference_number,
+            },
+            'applications/email/application_confirmation_subject.txt',
+            plain_body_template_name='applications/email/application_confirmation.txt',
+        )
         return redirect('applications:thank-you')
 
 
@@ -90,6 +184,12 @@ class ThankYouView(TemplateView):
     """Display the confirmation page after an application is submitted."""
 
     template_name = 'applications/thank_you.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reference_number'] = self.request.session.get('last_submission_reference')
+        context['applicant_name'] = self.request.session.get('last_submission_name')
+        return context
 
 
 def suggested_score(app):
@@ -136,7 +236,8 @@ class DashboardView(StaffRequiredMixin, View):
         status = request.GET.get('status', '')
         if query:
             queryset = queryset.filter(
-                Q(full_name__icontains=query) |
+                Q(first_name__icontains=query) |
+                Q(last_name__icontains=query) |
                 Q(country_of_residence__icontains=query) |
                 Q(primary_category__icontains=query) |
                 Q(organisation__icontains=query)
@@ -212,7 +313,7 @@ class CsvExportView(StaffRequiredMixin, View):
                          'Status', 'Committee Score', 'Submitted'])
         for application in FamApplication.objects.order_by('-submitted_at'):
             writer.writerow([
-                application.id, application.full_name, application.country_of_residence,
+                application.id, f'{application.first_name} {application.last_name}', application.country_of_residence,
                 application.primary_category, application.organisation, application.email,
                 application.total_audience, application.availability, application.status,
                 application.committee_score or '', application.submitted_at,
@@ -236,7 +337,8 @@ def _export_xlsx(request):
 
     form_labels = {
         'id': 'ID',
-        'full_name': 'Full Name',
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
         'nationality': 'Nationality',
         'country_of_residence': 'Country of Residence',
         'city_state_province': 'City / State / Province',
@@ -366,7 +468,7 @@ def _application_pdf(request, pk):
              Paragraph('International FAM Tour — Application', styles['Heading2']),
              Paragraph('FAM Tour Dates: 12–20 January 2027', body), Spacer(1, 8)]
     sections = [
-        ('Applicant Details', [('Full Name', app.full_name), ('Nationality', app.nationality),
+        ('Applicant Details', [('First Name', app.first_name), ('Last Name', app.last_name), ('Nationality', app.nationality),
                                ('Country of Residence', app.country_of_residence),
                                ('City / State / Province', app.city_state_province), ('Address', app.address),
                                ('Email', app.email), ('Mobile / WhatsApp', app.mobile_whatsapp),

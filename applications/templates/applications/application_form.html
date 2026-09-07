@@ -149,6 +149,16 @@
             color: white;
             border-color: #ea580c
         }
+
+        .step-dot.complete {
+          background: #16a34a;
+          color: white;
+          border-color: #16a34a
+        }
+
+        .validation-modal[hidden] {
+          display: none
+        }
     </style>
   </head>
   <body class="bg-slate-50 text-slate-800 antialiased">
@@ -219,13 +229,22 @@
               <step-header eyebrow="Section 1" title="Tell us about yourself"></step-header>
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
-                  <label class="label">Full Name <b class="text-orange-600">*</b></label>
-                  <input class="field"
-                         name="full_name"
-                         autocomplete="name"
-                         required
-                         value="{{ request.POST.full_name }}"
-                         placeholder="e.g. Alex Morgan">
+                      <label class="label">First Name <b class="text-orange-600">*</b></label>
+                      <input class="field"
+                        name="first_name"
+                        autocomplete="given-name"
+                        required
+                        value="{{ request.POST.first_name }}"
+                        placeholder="e.g. Alex">
+                    </div>
+                    <div>
+                      <label class="label">Last Name <b class="text-orange-600">*</b></label>
+                      <input class="field"
+                        name="last_name"
+                        autocomplete="family-name"
+                        required
+                        value="{{ request.POST.last_name }}"
+                        placeholder="e.g. Morgan">
                 </div>
                 <div>
                   <label class="label">Nationality <b class="text-orange-600">*</b></label>
@@ -237,11 +256,12 @@
                 </div>
                 <div>
                   <label class="label">Country of Residence <b class="text-orange-600">*</b></label>
-                  <input class="field"
-                         name="country_of_residence"
-                         required
-                         value="{{ request.POST.country_of_residence }}"
-                         placeholder="Country">
+                  <select class="field" name="country_of_residence" required>
+                    <option value="">Select country</option>
+                    {% for value, label in form.country_of_residence.field.choices %}
+                      <option value="{{ value }}" {% if request.POST.country_of_residence == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
                 </div>
                 <div>
                   <label class="label">City / State / Province <b class="text-orange-600">*</b></label>
@@ -260,13 +280,32 @@
                 </div>
                 <div>
                   <label class="label">Email Address <b class="text-orange-600">*</b></label>
-                  <input class="field"
-                         type="email"
-                         name="email"
-                         autocomplete="email"
-                         required
-                         value="{{ request.POST.email }}"
-                         placeholder="you@example.com">
+                    <div class="flex gap-2">
+                      <input class="field min-w-0"
+                        type="email"
+                        id="emailAddress"
+                        name="email"
+                        autocomplete="email"
+                        required
+                        value="{{ request.POST.email }}"
+                        placeholder="you@example.com">
+                      <button type="button"
+                    id="sendOtpBtn"
+                    class="shrink-0 rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">Send OTP</button>
+                    </div>
+                    <div class="mt-3 flex gap-2">
+                      <input class="field min-w-0"
+                        type="text"
+                        id="emailOtp"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        maxlength="6"
+                        placeholder="Enter 6-digit OTP">
+                      <button type="button"
+                    id="verifyOtpBtn"
+                    class="shrink-0 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100">Verify</button>
+                    </div>
+                    <p id="emailVerificationStatus" class="hint" role="status"></p>
                 </div>
                 <div>
                   <label class="label">Mobile / WhatsApp Number <b class="text-orange-600">*</b></label>
@@ -846,20 +885,6 @@
                               <question-radio title="Are you willing to comply with the programme schedule and participation requirements?" name="comply_schedule"></question-radio>
                             </div>
                           </div>
-                          <div class="mt-7 grid gap-6 md:grid-cols-2">
-                            <div>
-                              <label class="label">Do you have a valid passport for travel to India?</label>
-                              <select class="field" name="valid_passport">
-                                <option value="">Select</option>
-                                <option>Yes</option>
-                                <option>No</option>
-                                <option>Renewal in progress</option>
-                              </select>
-                            </div>
-                            <div>
-                              <question-radio title="Are you willing to comply with the programme schedule and participation requirements?" name="comply_schedule"></question-radio>
-                            </div>
-                          </div>
                         </section>
                         <section data-step="12" data-title="Additional information">
                           <step-header eyebrow="Section 12" title="Additional information"></step-header>
@@ -928,6 +953,28 @@
                     </form>
                   </section>
                 </main>
+                <div id="validationModal"
+                     class="validation-modal fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-5"
+                     hidden
+                     role="dialog"
+                     aria-modal="true"
+                     aria-labelledby="validationModalTitle">
+                  <div class="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
+                    <div class="flex items-start justify-between gap-4">
+                      <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-red-600">Incomplete application</p>
+                        <h2 id="validationModalTitle" class="mt-1 text-2xl font-bold text-ink">Please complete these fields</h2>
+                      </div>
+                      <button type="button" id="closeValidationModal" class="text-2xl leading-none text-slate-400 hover:text-slate-700" aria-label="Close">&times;</button>
+                    </div>
+                    <ul id="validationErrors" class="mt-5 list-disc space-y-2 pl-5 text-sm text-slate-700"></ul>
+                    <p class="mt-5 rounded-2xl bg-slate-50 p-3 text-sm text-slate-600">
+                      Last submitted session name:
+                      <strong id="lastSubmissionName" class="text-ink">Not available</strong>
+                    </p>
+                    <button type="button" id="validationModalOk" class="mt-5 w-full rounded-xl bg-orange-600 px-5 py-3 text-sm font-bold text-white hover:bg-orange-700">Review fields</button>
+                  </div>
+                </div>
                 <template id="languageTemplate">
                   <div class="grid gap-3 sm:grid-cols-[1fr_190px_auto]">
                     <input class="field" name="language_name" placeholder="Language">
@@ -969,6 +1016,10 @@
                         Math.min(total, Number(localStorage.getItem("tnFamStep") || 1)),
                     );
                     const nav = document.getElementById("stepNav");
+                    const validationModal = document.getElementById("validationModal"),
+                      validationErrors = document.getElementById("validationErrors"),
+                      lastSubmissionName = document.getElementById("lastSubmissionName"),
+                      lastSubmissionKey = "discoverTamilNaduLastSubmissionName";
                     nav.innerHTML = steps
                         .map(
                             (s, i) =>
@@ -1003,6 +1054,63 @@
                         return String(el.value ?? '').trim() !== '';
                     }
 
+                      function getFieldLabel(el) {
+                        const displayNames = {
+                          first_name: "First Name",
+                          last_name: "Last Name",
+                          nationality: "Nationality",
+                          country_of_residence: "Country of Residence",
+                          city_state_province: "City / State / Province",
+                          address: "Address",
+                          email: "Email Address",
+                          language_name: "Professional Language",
+                          tourism_interests: "Tourism Area of Interest",
+                          promotion_channels: "Post-FAM Promotion Option",
+                          declaration_accepted: "Declaration and Consent",
+                          applicant_name: "Applicant Name",
+                          declaration_date: "Declaration Date",
+                          digital_signature: "Digital Confirmation / Signature",
+                        };
+                        let node = el.parentElement;
+                        let nearbyLabel;
+                        while (node && !nearbyLabel) {
+                          nearbyLabel = node.querySelector(":scope > .label") ||
+                            node.previousElementSibling?.matches(".label") && node.previousElementSibling;
+                          node = node.parentElement;
+                        }
+                        return (nearbyLabel?.textContent || displayNames[el.name] || el.name || "This field")
+                          .replace("*", "")
+                          .trim();
+                      }
+
+                      function isStepComplete(step) {
+                        const required = [...step.querySelectorAll("[required]")];
+                        const radioNames = new Set();
+                        const requiredComplete = required.every((el) => {
+                          if (el.type === "radio") {
+                            if (radioNames.has(el.name)) return true;
+                            radioNames.add(el.name);
+                            return !!step.querySelector(`[name="${el.name}"]:checked`);
+                          }
+                          return isFieldValid(el);
+                        });
+                        if (!requiredComplete) return false;
+
+                        const stepNumber = Number(step.dataset.step);
+                        if (stepNumber === 1 && verifiedEmail !== emailAddress.value.trim().toLowerCase()) return false;
+                        if (stepNumber === 6 && ![...step.querySelectorAll('[name="language_name"]')].some((el) => el.value.trim())) return false;
+                        if (stepNumber === 7 && !step.querySelector('[name="tourism_interests"]:checked')) return false;
+                        if (stepNumber === 8 && !step.querySelector('[name="promotion_channels"]:checked')) return false;
+                        return true;
+                      }
+
+                      function updateStepCompletion() {
+                        document.querySelectorAll("[data-go]").forEach((button) => {
+                          const step = steps[Number(button.dataset.go) - 1];
+                          button.querySelector(".step-dot").classList.toggle("complete", isStepComplete(step));
+                        });
+                      }
+
                     function showStep(n) {
                         current = n;
                         steps.forEach((s) =>
@@ -1011,8 +1119,8 @@
                         document.querySelectorAll("[data-go]").forEach((b) => {
                             const x = Number(b.dataset.go),
                                 dot = b.querySelector(".step-dot");
-                            dot.classList.toggle("current", x === n);
-                            dot.classList.toggle("done", x < n);
+                            dot.classList.toggle("current", x === n && !isStepComplete(steps[x - 1]));
+                            dot.classList.toggle("done", x < n && !isStepComplete(steps[x - 1]));
                             b.classList.toggle("text-orange-700", x === n);
                         });
                         const pct = Math.round((n / total) * 100);
@@ -1032,6 +1140,7 @@
                             behavior: "smooth"
                         });
                         refreshConditionals();
+                        updateStepCompletion();
                     }
                     document.addEventListener("click", (e) => {
                         const b = e.target.closest("[data-go]");
@@ -1040,6 +1149,11 @@
                     document.getElementById("backBtn").onclick = () =>
                         showStep(Math.max(1, current - 1));
                     document.getElementById("nextBtn").onclick = () => {
+                      if (current === 1 && verifiedEmail !== emailAddress.value.trim().toLowerCase()) {
+                        setEmailVerificationStatus("Verify your email address before continuing.", true);
+                        emailOtp.focus();
+                        return;
+                      }
                         const active = steps[current - 1];
                         const required = [...active.querySelectorAll("[required]")];
                         for (const el of required) {
@@ -1070,7 +1184,10 @@
                     }
                     document
                         .getElementById("famForm")
-                        .addEventListener("change", refreshConditionals);
+                      .addEventListener("change", () => {
+                        refreshConditionals();
+                        updateStepCompletion();
+                      });
 
                     document.querySelectorAll("[data-max-words]").forEach((el) => {
                         const update = () => {
@@ -1104,6 +1221,92 @@
                     // Local browser draft. File inputs and CSRF token are intentionally excluded.
                     const form = document.getElementById("famForm"),
                         draftKey = "discoverTamilNaduFamDraftV1";
+                    const emailAddress = document.getElementById("emailAddress"),
+                      emailOtp = document.getElementById("emailOtp"),
+                      sendOtpBtn = document.getElementById("sendOtpBtn"),
+                      verifyOtpBtn = document.getElementById("verifyOtpBtn"),
+                      emailVerificationStatus = document.getElementById("emailVerificationStatus");
+                    let verifiedEmail = "";
+
+                    function setEmailVerificationStatus(message, isError = false) {
+                      emailVerificationStatus.textContent = message;
+                      emailVerificationStatus.className = `hint ${isError ? "text-red-600" : "text-emerald-600"}`;
+                    }
+
+                    function csrfToken() {
+                      return form.querySelector("[name=csrfmiddlewaretoken]").value;
+                    }
+
+                    sendOtpBtn.addEventListener("click", async () => {
+                      const email = emailAddress.value.trim().toLowerCase();
+                      if (!emailAddress.checkValidity()) {
+                        emailAddress.reportValidity();
+                        return;
+                      }
+                      sendOtpBtn.disabled = true;
+                      setEmailVerificationStatus("Sending verification code...");
+                      try {
+                        const response = await fetch("{% url 'applications:send-email-otp' %}", {
+                          method: "POST",
+                          headers: {
+                            "X-CSRFToken": csrfToken(),
+                            "Content-Type": "application/x-www-form-urlencoded",
+                          },
+                          body: new URLSearchParams({ email }),
+                        });
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.error || "Could not send the code.");
+                        verifiedEmail = "";
+                        setEmailVerificationStatus(data.message);
+                      } catch (error) {
+                        setEmailVerificationStatus(error.message, true);
+                      } finally {
+                        sendOtpBtn.disabled = false;
+                      }
+                    });
+
+                    verifyOtpBtn.addEventListener("click", async () => {
+                      const email = emailAddress.value.trim().toLowerCase();
+                      const otp = emailOtp.value.trim();
+                      if (!emailAddress.checkValidity()) {
+                        emailAddress.reportValidity();
+                        return;
+                      }
+                      if (!/^\d{6}$/.test(otp)) {
+                        emailOtp.setCustomValidity("Enter the 6-digit verification code.");
+                        emailOtp.reportValidity();
+                        emailOtp.setCustomValidity("");
+                        return;
+                      }
+                      verifyOtpBtn.disabled = true;
+                      setEmailVerificationStatus("Verifying code...");
+                      try {
+                        const response = await fetch("{% url 'applications:verify-email-otp' %}", {
+                          method: "POST",
+                          headers: {
+                            "X-CSRFToken": csrfToken(),
+                            "Content-Type": "application/x-www-form-urlencoded",
+                          },
+                          body: new URLSearchParams({ email, otp }),
+                        });
+                        const data = await response.json();
+                        if (!response.ok) throw new Error(data.error || "Could not verify the code.");
+                        verifiedEmail = email;
+                        setEmailVerificationStatus(data.message);
+                      } catch (error) {
+                        verifiedEmail = "";
+                        setEmailVerificationStatus(error.message, true);
+                      } finally {
+                        verifyOtpBtn.disabled = false;
+                      }
+                    });
+
+                    emailAddress.addEventListener("input", () => {
+                      if (verifiedEmail && verifiedEmail !== emailAddress.value.trim().toLowerCase()) {
+                        verifiedEmail = "";
+                        setEmailVerificationStatus("Email changed. Verify the new email address.", true);
+                      }
+                    });
 
                     function saveDraft() {
                         const data = {};
@@ -1152,6 +1355,7 @@
                     form.addEventListener("input", () => {
                         clearTimeout(window.__draftTimer);
                         window.__draftTimer = setTimeout(saveDraft, 300);
+                      updateStepCompletion();
                     });
                     // Sync all custom-radio values before submission
                     function syncCustomRadioValues() {
@@ -1183,12 +1387,12 @@
                             if (tag === "question-radio") {
                                 const checked = el.querySelector('input[type="radio"]:checked');
                                 if (!checked) {
-                                    errors.push(`${el.getAttribute("title")} is required`);
+                                  errors.push(`${getFieldLabel(el)} is required`);
                                 }
                             } else if (tag === "question-checkbox") {
                                 const checked = el.querySelector('input[type="checkbox"]:checked');
                                 if (!checked) {
-                                    errors.push(`${el.getAttribute("title")} is required`);
+                                  errors.push(`${getFieldLabel(el)} is required`);
                                 }
                             } else if (el.type === "radio") {
                                 const checked = form.querySelector(
@@ -1197,14 +1401,14 @@
                                 if (!checked) {
                                     const label = form.querySelector(`label[for="${el.id}"]`);
                                     errors.push(
-                                        `${label ? label.textContent : el.name} is required`,
+                                      `${label ? label.textContent : getFieldLabel(el)} is required`,
                                     );
                                 }
                             } else if (el.type === "checkbox") {
                                 if (!el.checked) {
                                     const label = form.querySelector(`label[for="${el.id}"]`);
                                     errors.push(
-                                        `${label ? label.textContent : el.name} is required`,
+                                      `${label ? label.textContent : getFieldLabel(el)} is required`,
                                     );
                                 }
                             } else if (
@@ -1217,20 +1421,28 @@
                             ) {
                                 if (!el.value || el.value.trim() === "") {
                                     const label = form.querySelector(`label[for="${el.id}"]`);
-                                    const fieldName = label ?
-                                        label.textContent :
-                                        el.name || "This field";
+                                    const fieldName = label ? label.textContent : getFieldLabel(el);
                                     errors.push(`${fieldName} is required`);
                                 }
                             } else if (el.tagName.toLowerCase() === "select") {
                                 if (!el.value) {
                                     const label = form.querySelector(`label[for="${el.id}"]`);
                                     errors.push(
-                                        `${label ? label.textContent : el.name} is required`,
+                                      `${label ? label.textContent : getFieldLabel(el)} is required`,
                                     );
                                 }
                             }
                         });
+
+                        if (![...form.querySelectorAll('[name="language_name"]')].some((el) => el.value.trim())) {
+                          errors.push("Professional language");
+                        }
+                        if (!form.querySelector('[name="tourism_interests"]:checked')) {
+                          errors.push("Tourism area of interest");
+                        }
+                        if (!form.querySelector('[name="promotion_channels"]:checked')) {
+                          errors.push("Post-FAM promotion option");
+                        }
 
                         // Check word count limits
                         form.querySelectorAll("[data-max-words]").forEach((el) => {
@@ -1247,6 +1459,25 @@
 
                         return errors;
                     }
+
+                      function showValidationModal(errors) {
+                        validationErrors.innerHTML = errors
+                          .map((error) => `<li>${error.replace(/\*/g, "")}</li>`)
+                          .join("");
+                        lastSubmissionName.textContent = sessionStorage.getItem(lastSubmissionKey) || "Not available";
+                        validationModal.hidden = false;
+                        document.getElementById("validationModalOk").focus();
+                      }
+
+                      function closeValidationModal() {
+                        validationModal.hidden = true;
+                      }
+
+                      document.getElementById("closeValidationModal").onclick = closeValidationModal;
+                      document.getElementById("validationModalOk").onclick = closeValidationModal;
+                      validationModal.addEventListener("click", (event) => {
+                        if (event.target === validationModal) closeValidationModal();
+                      });
 
                     // Inspect FormData before submission
                     function inspectFormData() {
@@ -1269,6 +1500,14 @@
                     }
 
                     form.addEventListener("submit", (e) => {
+                      if (verifiedEmail !== emailAddress.value.trim().toLowerCase()) {
+                        e.preventDefault();
+                        setEmailVerificationStatus("Verify your email address before submitting.", true);
+                        showStep(1);
+                        emailOtp.focus();
+                        return;
+                      }
+
                         // Sync custom-radio values
                         syncCustomRadioValues();
 
@@ -1277,10 +1516,7 @@
                         if (errors.length > 0) {
                             e.preventDefault();
                             console.error("❌ Form Validation Errors:", errors);
-                            alert(
-                                "Please fix the following issues:\n\n" +
-                                errors.map((err, i) => `${i + 1}. ${err}`).join("\n"),
-                            );
+                            showValidationModal(errors);
                             return;
                         }
 
@@ -1290,6 +1526,7 @@
 
                         // Clear draft on successful validation
                         localStorage.removeItem(draftKey);
+                        sessionStorage.setItem(lastSubmissionKey, form.querySelector('[name="applicant_name"]')?.value.trim() || "Not provided");
                     });
 
                     loadDraft();

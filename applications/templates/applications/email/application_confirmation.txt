@@ -1,0 +1,10 @@
+Dear {{ applicant_name }},
+
+Thank you for submitting your Discover Tamil Nadu International FAM Tour application.
+
+Your application reference number is: {{ reference_number }}
+
+Please keep this reference number for future communication.
+
+Regards,
+Discover Tamil Nadu Programme Team

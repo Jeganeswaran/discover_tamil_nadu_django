@@ -12,7 +12,8 @@ STATUS = (
 
 class FamApplication(models.Model):
     objects = models.Manager()
-    full_name = models.CharField(max_length=160)
+    first_name = models.CharField(max_length=80)
+    last_name = models.CharField(max_length=80)
     nationality = models.CharField(max_length=120)
     country_of_residence = models.CharField(max_length=120)
     city_state_province = models.CharField(max_length=160)
@@ -82,6 +83,7 @@ class FamApplication(models.Model):
     applicant_name = models.CharField(max_length=160)
     declaration_date = models.DateField()
     digital_signature = models.CharField(max_length=160)
+    reference_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
     status = models.CharField(max_length=16, choices=STATUS, default='submitted')
     committee_score = models.PositiveIntegerField(null=True, blank=True)
     professional_credibility_score = models.PositiveIntegerField(default=0)
@@ -97,7 +99,7 @@ class FamApplication(models.Model):
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.full_name} — {self.country_of_residence}'
+        return f'{self.first_name} {self.last_name} — {self.country_of_residence}'
 
 
 class SiteBrand(models.Model):

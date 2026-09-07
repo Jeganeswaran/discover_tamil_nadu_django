@@ -6,6 +6,8 @@ app_name = 'applications'
 
 urlpatterns = [
     path('', views.ApplicationFormView.as_view(), name='application-form'),
+    path('email/send-otp/', views.SendEmailOtpView.as_view(), name='send-email-otp'),
+    path('email/verify-otp/', views.VerifyEmailOtpView.as_view(), name='verify-email-otp'),
     path('thank-you/', views.ThankYouView.as_view(), name='thank-you'),
     path('committee/login/', views.CommitteeLoginView.as_view(), name='committee-login'),
     path('committee/logout/', LogoutView.as_view(), name='committee-logout'),
