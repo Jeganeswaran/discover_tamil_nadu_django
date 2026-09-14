@@ -1,9 +1,6 @@
 import csv
-import secrets
-import time
 import json
 
-from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.db.models import Q
@@ -35,75 +32,28 @@ SCORE_FIELDS = ['professional_credibility_score', 'market_relevance_score', 'aud
                 'tourism_influence_score', 'language_reach_score', 'content_potential_score', 'travel_trade_score',
                 'promotion_potential_score']
 
-OTP_EXPIRY_SECONDS = 10 * 60
-OTP_RESEND_DELAY_SECONDS = 60
-OTP_MAX_ATTEMPTS = 5
 
-
-def _email_error(request):
-    email = request.POST.get('email', '').strip().lower()
-    try:
-        validate_email(email)
-    except ValidationError:
-        return email, 'Enter a valid email address.'
-    if FamApplication.objects.filter(email__iexact=email).exists():
-        return email, 'An application with this email address already exists.'
-    return email, None
-
-
-class SendEmailOtpView(View):
-    """Send a time-limited email verification code for a new applicant."""
+class CheckEmailAvailabilityView(View):
+    """Return whether an application already exists for the typed email."""
 
     def post(self, request, *args, **kwargs):
-        email, error = _email_error(request)
-        if error:
-            return JsonResponse({'error': error}, status=400)
+        email = request.POST.get('email', '').strip().lower()
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({'exists': False, 'error': 'Enter a valid email address.'}, status=400)
 
-        last_sent = request.session.get('email_otp_sent_at', 0)
-        if time.time() - last_sent < OTP_RESEND_DELAY_SECONDS:
-            return JsonResponse({'error': 'Please wait before requesting another code.'}, status=429)
+        exists = FamApplication.objects.filter(email__iexact=email).exists()
+        if exists:
+            return JsonResponse({
+                'exists': True,
+                'message': 'An application with this email address already exists.',
+            }, status=409)
 
-        code = f'{secrets.randbelow(1000000):06d}'
-        request.session['email_otp_email'] = email
-        request.session['email_otp_hash'] = make_password(code)
-        request.session['email_otp_expires_at'] = time.time() + OTP_EXPIRY_SECONDS
-        request.session['email_otp_sent_at'] = time.time()
-        request.session['email_otp_attempts'] = 0
-        request.session.pop('email_verified', None)
-        request.session.modified = True
-
-        send_email(
-            email,
-            {'otp': code},
-            'applications/email/email_verification_subject.txt',
-            plain_body_template_name='applications/email/email_verification.txt',
-        )
-        return JsonResponse({'message': 'Verification code sent. Check your email.'})
-
-
-class VerifyEmailOtpView(View):
-    """Verify the submitted email code and mark that email as verified in session."""
-
-    def post(self, request, *args, **kwargs):
-        email, error = _email_error(request)
-        if error:
-            return JsonResponse({'error': error}, status=400)
-
-        if request.session.get('email_otp_email') != email:
-            return JsonResponse({'error': 'Request a verification code for this email first.'}, status=400)
-        if time.time() > request.session.get('email_otp_expires_at', 0):
-            return JsonResponse({'error': 'This verification code has expired. Request a new code.'}, status=400)
-        if request.session.get('email_otp_attempts', 0) >= OTP_MAX_ATTEMPTS:
-            return JsonResponse({'error': 'Too many incorrect attempts. Request a new code.'}, status=400)
-
-        request.session['email_otp_attempts'] = request.session.get('email_otp_attempts', 0) + 1
-        if not check_password(request.POST.get('otp', '').strip(), request.session.get('email_otp_hash', '')):
-            request.session.modified = True
-            return JsonResponse({'error': 'The verification code is incorrect.'}, status=400)
-
-        request.session['email_verified'] = email
-        request.session.modified = True
-        return JsonResponse({'message': 'Email verified successfully.'})
+        return JsonResponse({
+            'exists': False,
+            'message': 'Email address is available.',
+        })
 
 
 class ApplicationFormView(FormView):
@@ -131,9 +81,6 @@ class ApplicationFormView(FormView):
     def form_valid(self, form):
         """Validate repeated fields and save the submitted application."""
         email = form.cleaned_data['email'].strip().lower()
-        if self.request.session.get('email_verified') != email:
-            form.add_error('email', 'Please verify this email address before submitting.')
-            return self.form_invalid(form)
 
         missing = []
         if not any(value.strip() for value in self.request.POST.getlist('language_name')):

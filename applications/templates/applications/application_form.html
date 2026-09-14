@@ -280,23 +280,8 @@
                         required
                         value="{{ request.POST.email }}"
                         placeholder="you@example.com">
-                      <button type="button"
-                    id="sendOtpBtn"
-                    class="shrink-0 rounded-xl bg-slate-800 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">Send OTP</button>
                     </div>
-                    <div class="mt-3 flex gap-2">
-                      <input class="field min-w-0"
-                        type="text"
-                        id="emailOtp"
-                        inputmode="numeric"
-                        autocomplete="one-time-code"
-                        maxlength="6"
-                        placeholder="Enter 6-digit OTP">
-                      <button type="button"
-                    id="verifyOtpBtn"
-                    class="shrink-0 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-100">Verify</button>
-                    </div>
-                    <p id="emailVerificationStatus" class="hint" role="status"></p>
+                    <p id="emailAvailabilityStatus" class="hint" role="status"></p>
                 </div>
                 <div>
                   <label class="label">Mobile / WhatsApp Number <b class="text-orange-600">*</b></label>
@@ -1088,7 +1073,6 @@
                         if (!requiredComplete) return false;
 
                         const stepNumber = Number(step.dataset.step);
-                        if (stepNumber === 1 && verifiedEmail !== emailAddress.value.trim().toLowerCase()) return false;
                         if (stepNumber === 6 && ![...step.querySelectorAll('[name="language_name"]')].some((el) => el.value.trim())) return false;
                         if (stepNumber === 7 && !step.querySelector('[name="tourism_interests"]:checked')) return false;
                         if (stepNumber === 8 && !step.querySelector('[name="promotion_channels"]:checked')) return false;
@@ -1103,6 +1087,11 @@
                       }
 
                     function showStep(n) {
+                        if (n > 1 && emailAlreadyExists) {
+                            setEmailAvailabilityStatus("An application with this email address already exists.", true);
+                            emailAddress.focus();
+                            return;
+                        }
                         current = n;
                         steps.forEach((s) =>
                             s.classList.toggle("active", Number(s.dataset.step) === n),
@@ -1140,9 +1129,9 @@
                     document.getElementById("backBtn").onclick = () =>
                         showStep(Math.max(1, current - 1));
                     document.getElementById("nextBtn").onclick = () => {
-                      if (current === 1 && verifiedEmail !== emailAddress.value.trim().toLowerCase()) {
-                        setEmailVerificationStatus("Verify your email address before continuing.", true);
-                        emailOtp.focus();
+                      if (current === 1 && emailAlreadyExists) {
+                        setEmailAvailabilityStatus("An application with this email address already exists.", true);
+                        emailAddress.focus();
                         return;
                       }
                         const active = steps[current - 1];
@@ -1213,31 +1202,38 @@
                     const form = document.getElementById("famForm"),
                         draftKey = "discoverTamilNaduFamDraftV1";
                     const emailAddress = document.getElementById("emailAddress"),
-                      emailOtp = document.getElementById("emailOtp"),
-                      sendOtpBtn = document.getElementById("sendOtpBtn"),
-                      verifyOtpBtn = document.getElementById("verifyOtpBtn"),
-                      emailVerificationStatus = document.getElementById("emailVerificationStatus");
-                    let verifiedEmail = "";
+                      emailAvailabilityStatus = document.getElementById("emailAvailabilityStatus");
+                    let emailAlreadyExists = false;
+                    let emailCheckTimer = null;
 
-                    function setEmailVerificationStatus(message, isError = false) {
-                      emailVerificationStatus.textContent = message;
-                      emailVerificationStatus.className = `hint ${isError ? "text-red-600" : "text-emerald-600"}`;
+                    function setEmailAvailabilityStatus(message, isError = false) {
+                      emailAvailabilityStatus.textContent = message;
+                      emailAvailabilityStatus.className = `hint ${isError ? "text-red-600" : "text-emerald-600"}`;
                     }
 
                     function csrfToken() {
                       return form.querySelector("[name=csrfmiddlewaretoken]").value;
                     }
 
-                    sendOtpBtn.addEventListener("click", async () => {
+                    async function checkEmailAvailability() {
                       const email = emailAddress.value.trim().toLowerCase();
-                      if (!emailAddress.checkValidity()) {
-                        emailAddress.reportValidity();
+                      if (!email) {
+                        emailAlreadyExists = false;
+                        emailAddress.setCustomValidity("");
+                        setEmailAvailabilityStatus("Enter an email address to continue.", true);
                         return;
                       }
-                      sendOtpBtn.disabled = true;
-                      setEmailVerificationStatus("Sending verification code...");
+                      if (!emailAddress.checkValidity()) {
+                        emailAlreadyExists = false;
+                        emailAddress.setCustomValidity("Enter a valid email address.");
+                        setEmailAvailabilityStatus("Enter a valid email address.", true);
+                        return;
+                      }
+
+                      emailAddress.setCustomValidity("");
+                      setEmailAvailabilityStatus("Checking email address...", false);
                       try {
-                        const response = await fetch("{% url 'applications:send-email-otp' %}", {
+                        const response = await fetch("{% url 'applications:check-email-exists' %}", {
                           method: "POST",
                           headers: {
                             "X-CSRFToken": csrfToken(),
@@ -1246,57 +1242,36 @@
                           body: new URLSearchParams({ email }),
                         });
                         const data = await response.json();
-                        if (!response.ok) throw new Error(data.error || "Could not send the code.");
-                        verifiedEmail = "";
-                        setEmailVerificationStatus(data.message);
-                      } catch (error) {
-                        setEmailVerificationStatus(error.message, true);
-                      } finally {
-                        sendOtpBtn.disabled = false;
-                      }
-                    });
+                        if (!response.ok && data.exists) {
+                          emailAlreadyExists = true;
+                          emailAddress.setCustomValidity(data.message || "An application with this email address already exists.");
+                          setEmailAvailabilityStatus(data.message || "An application with this email address already exists.", true);
+                          return;
+                        }
+                        if (!response.ok) {
+                          throw new Error(data.error || data.message || "Could not check this email address.");
+                        }
 
-                    verifyOtpBtn.addEventListener("click", async () => {
-                      const email = emailAddress.value.trim().toLowerCase();
-                      const otp = emailOtp.value.trim();
-                      if (!emailAddress.checkValidity()) {
-                        emailAddress.reportValidity();
-                        return;
-                      }
-                      if (!/^\d{6}$/.test(otp)) {
-                        emailOtp.setCustomValidity("Enter the 6-digit verification code.");
-                        emailOtp.reportValidity();
-                        emailOtp.setCustomValidity("");
-                        return;
-                      }
-                      verifyOtpBtn.disabled = true;
-                      setEmailVerificationStatus("Verifying code...");
-                      try {
-                        const response = await fetch("{% url 'applications:verify-email-otp' %}", {
-                          method: "POST",
-                          headers: {
-                            "X-CSRFToken": csrfToken(),
-                            "Content-Type": "application/x-www-form-urlencoded",
-                          },
-                          body: new URLSearchParams({ email, otp }),
-                        });
-                        const data = await response.json();
-                        if (!response.ok) throw new Error(data.error || "Could not verify the code.");
-                        verifiedEmail = email;
-                        setEmailVerificationStatus(data.message);
+                        emailAlreadyExists = Boolean(data.exists);
+                        if (emailAlreadyExists) {
+                          emailAddress.setCustomValidity(data.message || "An application with this email address already exists.");
+                          setEmailAvailabilityStatus(data.message || "An application with this email address already exists.", true);
+                        } else {
+                          emailAddress.setCustomValidity("");
+                          setEmailAvailabilityStatus("Email address is available.", false);
+                        }
                       } catch (error) {
-                        verifiedEmail = "";
-                        setEmailVerificationStatus(error.message, true);
-                      } finally {
-                        verifyOtpBtn.disabled = false;
+                        emailAlreadyExists = false;
+                        emailAddress.setCustomValidity(error.message);
+                        setEmailAvailabilityStatus(error.message, true);
                       }
-                    });
+                    }
 
                     emailAddress.addEventListener("input", () => {
-                      if (verifiedEmail && verifiedEmail !== emailAddress.value.trim().toLowerCase()) {
-                        verifiedEmail = "";
-                        setEmailVerificationStatus("Email changed. Verify the new email address.", true);
-                      }
+                      emailAlreadyExists = false;
+                      emailAddress.setCustomValidity("");
+                      window.clearTimeout(emailCheckTimer);
+                      emailCheckTimer = window.setTimeout(checkEmailAvailability, 350);
                     });
 
                     function saveDraft() {
@@ -1491,13 +1466,13 @@
                     }
 
                     form.addEventListener("submit", (e) => {
-                      if (verifiedEmail !== emailAddress.value.trim().toLowerCase()) {
-                        e.preventDefault();
-                        setEmailVerificationStatus("Verify your email address before submitting.", true);
-                        showStep(1);
-                        emailOtp.focus();
-                        return;
-                      }
+                        if (emailAlreadyExists) {
+                          e.preventDefault();
+                          setEmailAvailabilityStatus("An application with this email address already exists.", true);
+                          showStep(1);
+                          emailAddress.focus();
+                          return;
+                        }
 
                         // Sync custom-radio values
                         syncCustomRadioValues();
